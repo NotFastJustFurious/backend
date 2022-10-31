@@ -11,7 +11,7 @@ import { PlainTextPersistence } from './persistence/PlainTextPersistence';
 import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
 import { RouteAuthentication, RouteLogout } from './route/RouteAuthentication';
-import { RouteProfile } from './route/RouteProfile';
+import { RouteProfile, RouteRegister, RouteProfileEdit } from './route/RouteProfile';
 
 
 
@@ -39,11 +39,11 @@ export class Server {
         this.sessionManager.createUser({
             username: "hello",
             passwordHash: "hi",
-            firstName: '',
-            lastName: '',
-            gender: '',
-            dob: '',
-            type: ''
+            firstName: 'Opal',
+            lastName: 'a',
+            gender: 'a',
+            dob: 'a',
+            type: 'patient'
         })
 
         this.express = Express()
@@ -65,6 +65,8 @@ export class Server {
         this.routes.push(new RouteAuthentication());
         this.routes.push(new RouteLogout());
         this.routes.push(new RouteProfile());
+        this.routes.push(new RouteRegister());
+        this.routes.push(new RouteProfileEdit());
 
         this.routes.forEach(route => {
             route.setup(this.express, this);

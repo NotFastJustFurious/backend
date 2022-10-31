@@ -20,6 +20,10 @@ export class PlainTextPersistence implements Persistence {
 
     async setUserData(userData: UserData): Promise<void> {
         //@ts-ignore
-        this.data[authData.username] = authData;
+        this.data[userData.username] = userData;
+    }
+
+    updateUserData(userData: UserData): Promise<void> {
+        return this.setUserData(userData);
     }
 }

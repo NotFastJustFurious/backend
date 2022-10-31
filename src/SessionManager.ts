@@ -71,6 +71,10 @@ export class SessionManager {
         userData.passwordHash = await this.hashPassword(userData.passwordHash);
         return await this.persistence.setAuthData(userData);
     }
+
+    async updateUser(userData: UserData): Promise<void> {
+        return await this.persistence.updateUserData(userData);
+    }
 }
 
 export class Session {

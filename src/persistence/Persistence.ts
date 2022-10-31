@@ -10,7 +10,7 @@ export type UserProfile = {
     lastName: string;
     gender: string;
     dob: string;
-    type: string;
+    type: "patient" | "therapist";
 }
 
 export type UserData = AuthData & UserProfile;
@@ -23,4 +23,6 @@ export default interface Persistence {
     getUserData(identifier: UserIdentifier): Promise<UserData | undefined>;
 
     setUserData(userData: UserData): Promise<void>;
+
+    updateUserData(userData: UserData): Promise<void>;
 }
