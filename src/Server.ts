@@ -10,7 +10,9 @@ import { PlainTextPersistence } from './persistence/PlainTextPersistence';
 
 import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
-import TestAuth from './route/RouteAuthentication';
+import { RouteAuthentication, RouteLogout } from './route/RouteAuthentication';
+import { RouteProfile } from './route/RouteProfile';
+
 
 
 export class Server {
@@ -30,6 +32,19 @@ export class Server {
 
         this.persistence = new PlainTextPersistence();
         this.sessionManager = new SessionManager(this.persistence);
+        async function addUsers() {
+            
+        }
+        
+        this.sessionManager.createUser({
+            username: "hello",
+            passwordHash: "hi",
+            firstName: '',
+            lastName: '',
+            gender: '',
+            dob: '',
+            type: ''
+        })
 
         this.express = Express()
         this.express.use(CorsMiddleware);
@@ -47,7 +62,9 @@ export class Server {
 
     setupRoutes() {
         this.routes.push(new RouteTest());
-        this.routes.push(new TestAuth());
+        this.routes.push(new RouteAuthentication());
+        this.routes.push(new RouteLogout());
+        this.routes.push(new RouteProfile());
 
         this.routes.forEach(route => {
             route.setup(this.express, this);

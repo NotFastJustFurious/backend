@@ -55,7 +55,7 @@ export class SessionManager {
 
         if (success) {
             session.setUserName(username);
-            session.setUserData(data)
+            session.setUserData(await this.persistence.getUserData(username));
         }
 
         return success;
@@ -103,7 +103,7 @@ export class Session {
         return this.userData;
     }
 
-    public setUserData(userData: UserData | undefined) {
+    public setUserData(userData?: UserData) {
         if (userData === undefined) {
             this.userData = undefined;
         } else {
