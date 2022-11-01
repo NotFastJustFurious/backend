@@ -49,7 +49,7 @@ export class SessionManager {
     }
 
     async authenticate(session: Session, username: string, password: string): Promise<boolean> {
-        let data = await this.persistence.getAuthData(username);
+        let data = await this.persistence.getUserData(username);
         if (!data) return false;
         let success = data.passwordHash !== undefined && await this.verifyPassword(password, data.passwordHash);
 
@@ -69,7 +69,7 @@ export class SessionManager {
     async createUser(userData: UserData): Promise<void> {
         if (userData.passwordHash === undefined) throw new Error('Password is required');
         userData.passwordHash = await this.hashPassword(userData.passwordHash);
-        return await this.persistence.setAuthData(userData);
+        return await this.persistence.setUserData(userData);
     }
 
     async updateUser(userData: UserData): Promise<void> {

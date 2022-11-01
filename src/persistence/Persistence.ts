@@ -10,19 +10,21 @@ export type UserProfile = {
     lastName: string;
     gender: string;
     dob: string;
+    condition: string[];
     type: "patient" | "therapist";
 }
 
 export type UserData = AuthData & UserProfile;
 
 export default interface Persistence {
-    getAuthData(identifier: UserIdentifier): Promise<AuthData | undefined>;
 
-    setAuthData(authData: AuthData): Promise<void>;
+    connect(): Promise<void>;
 
     getUserData(identifier: UserIdentifier): Promise<UserData | undefined>;
 
     setUserData(userData: UserData): Promise<void>;
 
     updateUserData(userData: UserData): Promise<void>;
+
+    getTherapist(condition: string): Promise<UserProfile[]>
 }

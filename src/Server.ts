@@ -1,12 +1,13 @@
-import Express from 'express';
 import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
 import Dotenv from 'dotenv';
+import Express from 'express';
 
-import { SessionManager } from "./SessionManager";
 import CorsMiddleware from './CorsMiddleware';
 import Persistence from './persistence/Persistence';
-import { PlainTextPersistence } from './persistence/PlainTextPersistence';
+import PlainTextPersistence from './persistence/PlainTextPersistence';
+import MongoPersistence from './persistence/MongoPersistence';
+import { SessionManager } from "./SessionManager";
 
 import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
@@ -30,11 +31,17 @@ export class Server {
         if(process.env.BASE != undefined)
             this.path = process.env.BASE;
 
-        this.persistence = new PlainTextPersistence();
-        this.sessionManager = new SessionManager(this.persistence);
-        async function addUsers() {
-            
+        if(process.env.MONGODB === undefined){
+            console.log("Using fallback persistence");
+            this.persistence = new PlainTextPersistence();
         }
+        else{
+            console.log("Using MongoDB persistence");
+            this.persistence = new MongoPersistence(process.env.MONGODB);
+        }
+        this.persistence.connect();
+        
+        this.sessionManager = new SessionManager(this.persistence);
         
         this.sessionManager.createUser({
             username: "hello",
@@ -43,6 +50,7 @@ export class Server {
             lastName: 'a',
             gender: 'a',
             dob: 'a',
+            condition: [],
             type: 'patient'
         })
 

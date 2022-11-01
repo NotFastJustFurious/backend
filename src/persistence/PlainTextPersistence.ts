@@ -1,16 +1,11 @@
-import Persistence, {AuthData, UserData, UserIdentifier} from "./Persistence";
+import Persistence, {AuthData, UserData, UserProfile, UserIdentifier} from "./Persistence";
 
-export class PlainTextPersistence implements Persistence {
+export default class PlainTextPersistence implements Persistence {
 
     data: object = {};
 
-     getAuthData(identifier: UserIdentifier): Promise<AuthData | undefined> {
-        return this.getUserData(identifier);    
-    }
+    async connect(): Promise<void>{
 
-    async setAuthData(authData: AuthData): Promise<void> {
-        //@ts-ignore
-        this.data[authData.username] = {...this.data[authData.username] , ...authData};
     }
 
     async getUserData(identifier: string): Promise<UserData | undefined> {
@@ -25,5 +20,9 @@ export class PlainTextPersistence implements Persistence {
 
     updateUserData(userData: UserData): Promise<void> {
         return this.setUserData(userData);
+    }
+    
+    getTherapist(condition: string): Promise<UserProfile[]>{
+        throw new Error("Not implemented");
     }
 }
