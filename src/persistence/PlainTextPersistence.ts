@@ -22,7 +22,7 @@ export default class PlainTextPersistence implements Persistence {
         return this.setUserData(userData);
     }
     
-    getTherapist(condition: string): Promise<UserProfile[]>{
+    getTherapist(condition: string[]): Promise<UserProfile[]>{
         throw new Error("Not implemented");
     }
 }

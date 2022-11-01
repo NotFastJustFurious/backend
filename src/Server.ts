@@ -13,6 +13,7 @@ import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
 import { RouteAuthentication, RouteLogout } from './route/RouteAuthentication';
 import { RouteProfile, RouteRegister, RouteProfileEdit } from './route/RouteProfile';
+import { RouteTherapist} from './route/RouteTherapist';
 
 
 
@@ -75,6 +76,7 @@ export class Server {
         this.routes.push(new RouteProfile());
         this.routes.push(new RouteRegister());
         this.routes.push(new RouteProfileEdit());
+        this.routes.push(new RouteTherapist());
 
         this.routes.forEach(route => {
             route.setup(this.express, this);
