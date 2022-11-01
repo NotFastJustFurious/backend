@@ -16,7 +16,7 @@ export class RouteAuthentication extends Route {
                 }));
 
                 return;
-            };
+            }
 
             // console.log(session, req.body, username, password);
             server.sessionManager.authenticate(session, username, password).then(success => {

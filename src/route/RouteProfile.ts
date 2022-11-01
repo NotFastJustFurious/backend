@@ -28,6 +28,11 @@ export class RouteProfile extends Route {
 }
 
 export class RouteRegister extends Route {
+    validate(data: string | undefined): boolean {
+        let success = data != undefined && data != "";
+        return success;
+    }
+
     setup(express: Application, server: Server): void {
         express.post(server.relativePath("register"), async (req, res) => {
             let session: Session = res.locals.session;
@@ -41,6 +46,22 @@ export class RouteRegister extends Route {
                 type: "patient"
             }
             //TODO validate data
+
+            let inputValid = this.validate(data.username);
+            inputValid &&= this.validate(data.firstName);
+            inputValid &&= this.validate(data.lastName);
+            inputValid &&= this.validate(data.passwordHash);
+            inputValid &&= this.validate(data.gender);
+            inputValid &&= this.validate(data.dob);
+
+            if(!inputValid) {
+                res.status(400).send(this.serialize({
+                    success: false,
+                    error: "Invalid input"
+                }));
+                return;
+            }
+
             await server.sessionManager.createUser(data);
             res.send(this.serialize({
                 success: true
@@ -63,6 +84,7 @@ export class RouteProfileEdit extends Route {
                 let passwordHash = await server.sessionManager.hashPassword(password)
                 data.passwordHash = passwordHash;
                 //TODO validate data
+                
                 await server.sessionManager.updateUser(data);
                 res.send(this.serialize({
                     success: true
