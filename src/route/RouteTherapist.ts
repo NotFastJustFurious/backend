@@ -18,8 +18,8 @@ export class RouteTherapist extends Route {
             }
 
             let condition = session.getUserData()?.condition;
+            let therapist = await server.persistence?.getTherapist(condition ? condition : []);
 
-            let therapist = await server.persistence.getTherapist(condition ? condition : []);
             res.send(this.serialize({
                 success: true,
                 data: therapist
@@ -27,3 +27,4 @@ export class RouteTherapist extends Route {
         });
     }
 }
+

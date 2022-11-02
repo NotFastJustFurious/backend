@@ -29,11 +29,25 @@ export default class MongoPersistence implements Persistence{
         await this.accounts?.insertOne(userData);
     }
 
-    updateUserData(userData: UserData): Promise<void>{
-        throw new Error("Not implemented");
+    async updateUserData(partialUserData: Partial<UserData>): Promise<void>{
+        await this.accounts?.updateOne({
+            username: partialUserData.username
+        },{
+            $set: partialUserData
+        });
     }
     
-    getTherapist(condition: string[]): Promise<UserProfile[]>{
-        throw new Error("Not implemented");
+    async getTherapist(condition: string[]): Promise<UserProfile[]>{
+        let profile :UserProfile =  {
+            firstName: "John",
+            lastName: "Doe",
+            gender: "Moo",
+            dob: "1999-01-01",
+            condition: ["depression"],
+            type: "therapist"
+        };
+        return [
+           profile
+        ];
     }
 }

@@ -18,11 +18,24 @@ export default class PlainTextPersistence implements Persistence {
         this.data[userData.username] = userData;
     }
 
-    updateUserData(userData: UserData): Promise<void> {
-        return this.setUserData(userData);
+    async updateUserData(partialUserData: Partial<UserData>): Promise<void>{
+        let username = partialUserData.username;
+        //@ts-ignore
+        this.data[username] = {...this.data[username], ...partialUserData};
     }
     
-    getTherapist(condition: string[]): Promise<UserProfile[]>{
-        throw new Error("Not implemented");
+
+    async getTherapist(condition: string[]): Promise<UserProfile[]>{
+        let profile :UserProfile =  {
+            firstName: "John",
+            lastName: "Doe",
+            gender: "Moo",
+            dob: "1999-01-01",
+            condition: ["depression"],
+            type: "therapist"
+        };
+        return [
+           profile
+        ];
     }
 }

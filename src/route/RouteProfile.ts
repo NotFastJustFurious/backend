@@ -10,7 +10,7 @@ export class RouteProfile extends Route {
             let session: Session = res.locals.session;
             let username = session.getUserName();
             if (username != undefined) {
-                let data = await server.persistence.getUserData(username)
+                let data = await server.persistence?.getUserData(username)
                 res.send(this.serialize({
                     success: true,
                     data: data
@@ -63,7 +63,7 @@ export class RouteRegister extends Route {
                 return;
             }
 
-            await server.sessionManager.createUser(data);
+            await server.sessionManager?.createUser(data);
             res.send(this.serialize({
                 success: true
             }));
@@ -96,7 +96,7 @@ export class RouteProfileEdit extends Route {
                 let password = req.body.password;
                 inputValid &&= this.validate(password);
                 
-                let passwordHash = await server.sessionManager.hashPassword(password)
+                let passwordHash = await server.sessionManager?.hashPassword(password)
                 data.passwordHash = passwordHash;
                 //TODO validate data
     
@@ -108,7 +108,7 @@ export class RouteProfileEdit extends Route {
                     return;
                 }
                 
-                await server.sessionManager.updateUser(data);
+                await server.sessionManager?.updateUser(data);
                 res.send(this.serialize({
                     success: true
                 }));

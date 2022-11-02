@@ -24,7 +24,7 @@ export default interface Persistence {
 
     setUserData(userData: UserData): Promise<void>;
 
-    updateUserData(userData: UserData): Promise<void>;
+    updateUserData(partialUserData: Partial<UserData>): Promise<void>;
 
     getTherapist(condition: string[]): Promise<UserProfile[]>
 }

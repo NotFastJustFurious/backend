@@ -19,7 +19,7 @@ export class RouteAuthentication extends Route {
             }
 
             // console.log(session, req.body, username, password);
-            server.sessionManager.authenticate(session, username, password).then(success => {
+            server.sessionManager?.authenticate(session, username, password).then(success => {
                 res.send(this.serialize({
                     success: success,
                     error: success ? undefined : "Invalid username or password"
@@ -39,7 +39,7 @@ export class RouteLogout extends Route{
     setup(express: Application, server: Server): void {
         express.delete(server.relativePath("login"), async (req, res) => {
             let session: Session = res.locals.session;
-            await server.sessionManager.deauthenticate(session);
+            await server.sessionManager?.deauthenticate(session);
             res.send(this.serialize({
                 success: true
             }));
