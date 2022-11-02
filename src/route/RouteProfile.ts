@@ -44,6 +44,7 @@ export class RouteRegister extends Route {
                 gender: req.body.gender,
                 dob: req.body.dob,
                 condition: [],
+                credentials: [],
                 type: "patient"
             }
             //TODO validate data

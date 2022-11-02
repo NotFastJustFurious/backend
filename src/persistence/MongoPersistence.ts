@@ -1,6 +1,6 @@
 import { MongoClient, Db, Collection} from 'mongodb';
 
-import Persistence, {UserData, UserProfile, UserIdentifier} from './Persistence';
+import Persistence, {UserData, UserProfile, PatientRecord, UserIdentifier} from './Persistence';
 
 export default class MongoPersistence implements Persistence{
     mongo: MongoClient;
@@ -37,17 +37,33 @@ export default class MongoPersistence implements Persistence{
         });
     }
     
-    async getTherapist(condition: string[]): Promise<UserProfile[]>{
+    async searchTherapist(condition: string[]): Promise<UserProfile[]>{
         let profile :UserProfile =  {
             firstName: "John",
             lastName: "Doe",
             gender: "Moo",
             dob: "1999-01-01",
-            condition: ["depression"],
+            condition: [],
+            credentials: [{
+                name: "depression",
+                description: "they can solve the big sad!"
+            }],
             type: "therapist"
         };
         return [
            profile
         ];
+    }
+
+    addRecord(record: PatientRecord): Promise<void>{
+        throw new Error("Not implemented");
+    }
+
+    getRecords(username: UserIdentifier): Promise<PatientRecord[]>{
+        throw new Error("Not implemented");
+    }
+
+    editRecord(record: PatientRecord): Promise<void> {
+        throw new Error("Not implemented");
     }
 }

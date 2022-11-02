@@ -1,8 +1,13 @@
 export type UserIdentifier = string;
 
 export type AuthData = {
-    username: string;
+    username: UserIdentifier;
     passwordHash: string | undefined;
+}
+
+export type TherapistCredential = {
+    name: string,
+    description?: string
 }
 
 export type UserProfile = {
@@ -11,7 +16,19 @@ export type UserProfile = {
     gender: string;
     dob: string;
     condition: string[];
+    credentials: TherapistCredential[];
     type: "patient" | "therapist";
+}
+
+export type PatientRecord = {
+    username: UserIdentifier,
+    date: string,
+    note: string
+}
+
+export type Session = {
+    therapist: UserIdentifier,
+    patient: UserIdentifier
 }
 
 export type UserData = AuthData & UserProfile;
@@ -26,5 +43,23 @@ export default interface Persistence {
 
     updateUserData(partialUserData: Partial<UserData>): Promise<void>;
 
-    getTherapist(condition: string[]): Promise<UserProfile[]>
+    searchTherapist(condition: string[]): Promise<UserProfile[]>
+
+    // Records
+    
+    addRecord(record: PatientRecord): Promise<void>;
+
+    getRecords(username: UserIdentifier): Promise<PatientRecord[]>;
+
+    editRecord(record: PatientRecord): Promise<void>;
+
+    // Requests
+
+    // listRequest(therapist: UserIdentifier): Promise
+
+
+
+    // Sessions
+
+
 }

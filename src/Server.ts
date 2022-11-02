@@ -14,6 +14,7 @@ import RouteTest from './route/RouteTest';
 import { RouteAuthentication, RouteLogout } from './route/RouteAuthentication';
 import { RouteProfile, RouteRegister, RouteProfileEdit } from './route/RouteProfile';
 import { RouteTherapist } from './route/RouteTherapist';
+import { RouteRecordAdd, RouteRecordEdit } from './route/RouteRecord';
 
 
 
@@ -40,6 +41,9 @@ export class Server {
         this.routes.push(new RouteRegister());
         this.routes.push(new RouteProfileEdit());
         this.routes.push(new RouteTherapist());
+
+        this.routes.push(new RouteRecordAdd());
+        this.routes.push(new RouteRecordEdit());
 
         this.routes.forEach(route => {
             route.setup(this.express as Application, this);
