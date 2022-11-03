@@ -1,4 +1,4 @@
-import Persistence, {AuthData, UserData, PatientRecord, UserProfile, UserIdentifier} from "./Persistence";
+import Persistence, {AuthData, UserData, PatientRecord, UserProfile, UserIdentifier, TherapySession} from "./Persistence";
 
 export default class PlainTextPersistence implements Persistence {
 
@@ -52,6 +52,10 @@ export default class PlainTextPersistence implements Persistence {
     }
 
     editRecord(record: PatientRecord): Promise<void> {
+        throw new Error("Not implemented");
+    }
+
+    listSession(record: UserIdentifier): Promise<TherapySession[]> {
         throw new Error("Not implemented");
     }
 }

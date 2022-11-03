@@ -1,8 +1,8 @@
 export type UserIdentifier = string;
 
 export type AuthData = {
-    username: UserIdentifier;
-    passwordHash: string | undefined;
+    username: UserIdentifier,
+    passwordHash: string | undefined
 }
 
 export type TherapistCredential = {
@@ -11,13 +11,13 @@ export type TherapistCredential = {
 }
 
 export type UserProfile = {
-    firstName: string;
-    lastName: string;
-    gender: string;
-    dob: string;
-    condition: string[];
-    credentials: TherapistCredential[];
-    type: "patient" | "therapist";
+    firstName: string,
+    lastName: string,
+    gender: string,
+    dob: string,
+    condition: string[],
+    credentials: TherapistCredential[],
+    type: "patient" | "therapist"
 }
 
 export type PatientRecord = {
@@ -26,9 +26,10 @@ export type PatientRecord = {
     note: string
 }
 
-export type Session = {
+export type TherapySession = {
     therapist: UserIdentifier,
-    patient: UserIdentifier
+    patient: UserIdentifier,
+    active: boolean
 }
 
 export type UserData = AuthData & UserProfile;
@@ -53,13 +54,13 @@ export default interface Persistence {
 
     editRecord(record: PatientRecord): Promise<void>;
 
-    // Requests
+     // Sessions
 
-    // listRequest(therapist: UserIdentifier): Promise
+    listSession(therapist: UserIdentifier): Promise<TherapySession[]>;
 
 
 
-    // Sessions
+   
 
 
 }

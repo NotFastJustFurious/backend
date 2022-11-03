@@ -111,6 +111,10 @@ export class Session {
         return this.userData;
     }
 
+    public listSession() {
+        return this.userData;
+    }
+
     public setUserData(userData?: UserData) {
         if (userData === undefined) {
             this.userData = undefined;

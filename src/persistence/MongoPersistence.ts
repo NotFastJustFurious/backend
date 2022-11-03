@@ -1,6 +1,6 @@
 import { MongoClient, Db, Collection} from 'mongodb';
 
-import Persistence, {UserData, UserProfile, PatientRecord, UserIdentifier} from './Persistence';
+import Persistence, {UserData, UserProfile, PatientRecord, UserIdentifier, TherapySession} from './Persistence';
 
 export default class MongoPersistence implements Persistence{
     mongo: MongoClient;
@@ -64,6 +64,10 @@ export default class MongoPersistence implements Persistence{
     }
 
     editRecord(record: PatientRecord): Promise<void> {
+        throw new Error("Not implemented");
+    }
+
+    listSession(record: UserIdentifier): Promise<TherapySession[]> {
         throw new Error("Not implemented");
     }
 }

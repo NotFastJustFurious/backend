@@ -28,7 +28,7 @@ export class RouteTherapist extends Route {
     }
 }
 
-export class RouteTherapistlist extends Route {
+export class RouteTherapistSession extends Route {
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("request"), async (req, res) => {
             let session: Session = res.locals.session;
@@ -40,9 +40,9 @@ export class RouteTherapistlist extends Route {
                 }));
                 return;
             }
-
-            //TODO : list from request table
-            //let requests = await server.persistence?.listRequest();
+            
+            let therapist = session.getTherapist()?.username;
+            let requests = await server.persistence?.listSession(therapist ? therapist : "");
             res.send(this.serialize({
                 success: true,
             }));
