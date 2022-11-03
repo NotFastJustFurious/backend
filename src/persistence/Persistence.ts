@@ -35,7 +35,7 @@ export type TherapySession = {
 }
 
 export type TherapyRecord = {
-    username: UserIdentifier,
+    patient: UserIdentifier,
     date: string,
     note: string
 }
@@ -68,5 +68,7 @@ export default interface Persistence {
 
     closeTherapySession(session: TherapySession): Promise<void>;
 
-    getTherapySession(therapist: UserIdentifier): Promise<TherapySession[]>;
+    getTherapySessionByTherapist(therapist: UserIdentifier): Promise<TherapySession[]>;
+
+    getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession>;
 }

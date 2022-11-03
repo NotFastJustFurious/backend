@@ -1,10 +1,10 @@
-import Persistence, {AuthData, UserData, TherapyRecord, UserProfile, UserIdentifier, TherapySession} from "./Persistence";
+import Persistence, { AuthData, UserData, TherapyRecord, UserProfile, UserIdentifier, TherapySession } from "./Persistence";
 
 export default class PlainTextPersistence implements Persistence {
 
     data: object = {};
 
-    async connect(): Promise<void>{
+    async connect(): Promise<void> {
 
     }
 
@@ -18,15 +18,15 @@ export default class PlainTextPersistence implements Persistence {
         this.data[userData.username] = userData;
     }
 
-    async updateUserData(partialUserData: Partial<UserData>): Promise<void>{
+    async updateUserData(partialUserData: Partial<UserData>): Promise<void> {
         let username = partialUserData.username;
         //@ts-ignore
-        this.data[username] = {...this.data[username], ...partialUserData};
+        this.data[username] = { ...this.data[username], ...partialUserData };
     }
-    
 
-    async searchTherapist(condition: string[]): Promise<UserProfile[]>{
-        let profile :UserProfile =  {
+
+    async searchTherapist(condition: string[]): Promise<UserProfile[]> {
+        let profile: UserProfile = {
             firstName: "John",
             lastName: "Doe",
             gender: "Moo",
@@ -39,18 +39,18 @@ export default class PlainTextPersistence implements Persistence {
             type: "therapist"
         };
         return [
-           profile
+            profile
         ];
     }
 
-    addRecord(record: TherapyRecord): Promise<void>{
+    addRecord(record: TherapyRecord): Promise<void> {
         throw new Error("Not implemented");
     }
 
-    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]>{
+    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]> {
         return [
             {
-                username: "hello",
+                patient: "hello",
                 date: "03/06/2009",
                 note: "help! she's crazy!!! This is an emerge   "
             }
@@ -63,15 +63,65 @@ export default class PlainTextPersistence implements Persistence {
 
 
 
-    createTherapySession(session: TherapySession): Promise<void>{
+    createTherapySession(session: TherapySession): Promise<void> {
         throw new Error("Not implemented");
     }
 
-    closeTherapySession(session: TherapySession): Promise<void>{
+    closeTherapySession(session: TherapySession): Promise<void> {
         throw new Error("Not implemented");
     }
 
-    getTherapySession(record: UserIdentifier): Promise<TherapySession[]> {
-        throw new Error("Not implemented");
+    async getTherapySessionByTherapist(therapist: UserIdentifier): Promise<TherapySession[]> {
+        return [
+            {
+                id: "555555",
+                therapist: therapist,
+                patient: "hello",
+                active: true,
+                messages: [
+                    {
+                        author: therapist,
+                        timestamp: Date.now(),
+                        message: "How is it going m8?"
+                    },
+                    {
+                        author: "hello",
+                        timestamp: Date.now() + 1000,
+                        message: "I has the big sad!"
+                    },
+                    {
+                        author: therapist,
+                        timestamp: Date.now() + 2000,
+                        message: "Nooo my only weakness!"
+                    },
+                ]
+            }
+        ]
+    }
+
+    async getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession> {
+        return {
+            id: "555555",
+            therapist: "therapist",
+            patient: "hello",
+            active: true,
+            messages: [
+                {
+                    author: "therapist",
+                    timestamp: Date.now(),
+                    message: "How is it going m8?"
+                },
+                {
+                    author: "hello",
+                    timestamp: Date.now() + 1000,
+                    message: "I has the big sad!"
+                },
+                {
+                    author: "therapist",
+                    timestamp: Date.now() + 2000,
+                    message: "Nooo my only weakness!"
+                },
+            ]
+        };
     }
 }

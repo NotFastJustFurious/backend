@@ -1,8 +1,8 @@
-import { MongoClient, Db, Collection} from 'mongodb';
+import { MongoClient, Db, Collection } from 'mongodb';
 
-import Persistence, {UserData, UserProfile, TherapyRecord, UserIdentifier, TherapySession} from './Persistence';
+import Persistence, { UserData, UserProfile, TherapyRecord, UserIdentifier, TherapySession } from './Persistence';
 
-export default class MongoPersistence implements Persistence{
+export default class MongoPersistence implements Persistence {
     mongo: MongoClient;
     database?: Db;
 
@@ -10,7 +10,7 @@ export default class MongoPersistence implements Persistence{
     therapyCollection?: Collection<TherapySession>;
     recordCollection?: Collection<TherapyRecord>;
 
-    constructor(uri: string){
+    constructor(uri: string) {
         this.mongo = new MongoClient(uri);
     }
 
@@ -22,28 +22,28 @@ export default class MongoPersistence implements Persistence{
         this.recordCollection = this.database.collection<TherapyRecord>("record");
     }
 
-    getUserData(identifier: UserIdentifier): Promise<UserData | undefined>{
+    getUserData(identifier: UserIdentifier): Promise<UserData | undefined> {
         return this.accountCollection?.findOne<UserData>({
             username: identifier
-         }).then(userData => {
+        }).then(userData => {
             return userData ? userData : undefined;
-         }) as Promise<UserData | undefined>;
+        }) as Promise<UserData | undefined>;
     }
 
-    async setUserData(userData: UserData): Promise<void>{
+    async setUserData(userData: UserData): Promise<void> {
         await this.accountCollection?.insertOne(userData);
     }
 
-    async updateUserData(partialUserData: Partial<UserData>): Promise<void>{
+    async updateUserData(partialUserData: Partial<UserData>): Promise<void> {
         await this.accountCollection?.updateOne({
             username: partialUserData.username
-        },{
+        }, {
             $set: partialUserData
         });
     }
-    
-    async searchTherapist(condition: string[]): Promise<UserProfile[]>{
-        let profile :UserProfile =  {
+
+    async searchTherapist(condition: string[]): Promise<UserProfile[]> {
+        let profile: UserProfile = {
             firstName: "John",
             lastName: "Doe",
             gender: "Moo",
@@ -56,15 +56,15 @@ export default class MongoPersistence implements Persistence{
             type: "therapist"
         };
         return [
-           profile
+            profile
         ];
     }
 
-    addRecord(record: TherapyRecord): Promise<void>{
+    addRecord(record: TherapyRecord): Promise<void> {
         throw this.recordCollection?.insertOne(record);
     }
 
-    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]>{
+    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]> {
         return await this.recordCollection?.find({
             username: username
         }).toArray() as TherapyRecord[];
@@ -73,16 +73,24 @@ export default class MongoPersistence implements Persistence{
     editRecord(record: TherapyRecord): Promise<void> {
         throw new Error("Not implemented");
     }
-    
-    createTherapySession(session: TherapySession): Promise<void>{
+
+    createTherapySession(session: TherapySession): Promise<void> {
         throw new Error("Not implemented");
     }
 
-    closeTherapySession(session: TherapySession): Promise<void>{
+    closeTherapySession(session: TherapySession): Promise<void> {
         throw new Error("Not implemented");
     }
 
-    getTherapySession(record: UserIdentifier): Promise<TherapySession[]> {
-        throw new Error("Not implemented");
+    async getTherapySessionByTherapist(therapist: UserIdentifier): Promise<TherapySession[]> {
+        return await this.therapyCollection?.find({
+            therapist: therapist
+        }).toArray() as TherapySession[];
+    }
+
+    async getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession> {
+        return await this.therapyCollection?.findOne({
+            patient: patient
+        }) as TherapySession;
     }
 }

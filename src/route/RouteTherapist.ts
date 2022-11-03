@@ -32,6 +32,7 @@ export class RouteTherapist extends Route {
 
 // createTherapySession(session: TherapySession): Promise<void>;
 export class RouteTherapistCreate extends Route {
+
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("therapy/create"), async (req, res) => {
             let session: Session = res.locals.session;
