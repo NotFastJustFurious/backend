@@ -1,4 +1,4 @@
-import Persistence, {AuthData, UserData, PatientRecord, UserProfile, UserIdentifier, TherapySession} from "./Persistence";
+import Persistence, {AuthData, UserData, TherapyRecord, UserProfile, UserIdentifier, TherapySession} from "./Persistence";
 
 export default class PlainTextPersistence implements Persistence {
 
@@ -43,19 +43,35 @@ export default class PlainTextPersistence implements Persistence {
         ];
     }
 
-    addRecord(record: PatientRecord): Promise<void>{
+    addRecord(record: TherapyRecord): Promise<void>{
         throw new Error("Not implemented");
     }
 
-    getRecords(username: UserIdentifier): Promise<PatientRecord[]>{
+    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]>{
+        return [
+            {
+                username: "hello",
+                date: "03/06/2009",
+                note: "help! she's crazy!!! This is an emerge   "
+            }
+        ];
+    }
+
+    editRecord(record: TherapyRecord): Promise<void> {
         throw new Error("Not implemented");
     }
 
-    editRecord(record: PatientRecord): Promise<void> {
+
+
+    createTherapySession(session: TherapySession): Promise<void>{
         throw new Error("Not implemented");
     }
 
-    listSession(record: UserIdentifier): Promise<TherapySession[]> {
+    closeTherapySession(session: TherapySession): Promise<void>{
+        throw new Error("Not implemented");
+    }
+
+    getTherapySession(record: UserIdentifier): Promise<TherapySession[]> {
         throw new Error("Not implemented");
     }
 }

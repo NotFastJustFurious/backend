@@ -1,11 +1,14 @@
 import { MongoClient, Db, Collection} from 'mongodb';
 
-import Persistence, {UserData, UserProfile, PatientRecord, UserIdentifier, TherapySession} from './Persistence';
+import Persistence, {UserData, UserProfile, TherapyRecord, UserIdentifier, TherapySession} from './Persistence';
 
 export default class MongoPersistence implements Persistence{
     mongo: MongoClient;
     database?: Db;
-    accounts?: Collection<UserData>;
+
+    accountCollection?: Collection<UserData>;
+    therapyCollection?: Collection<TherapySession>;
+    recordCollection?: Collection<TherapyRecord>;
 
     constructor(uri: string){
         this.mongo = new MongoClient(uri);
@@ -14,11 +17,13 @@ export default class MongoPersistence implements Persistence{
     async connect(): Promise<void> {
         await this.mongo.connect();
         this.database = this.mongo.db("karmental");
-        this.accounts = this.database.collection<UserData>("account");
+        this.accountCollection = this.database.collection<UserData>("account");
+        this.therapyCollection = this.database.collection<TherapySession>("therapy");
+        this.recordCollection = this.database.collection<TherapyRecord>("record");
     }
 
     getUserData(identifier: UserIdentifier): Promise<UserData | undefined>{
-        return this.accounts?.findOne<UserData>({
+        return this.accountCollection?.findOne<UserData>({
             username: identifier
          }).then(userData => {
             return userData ? userData : undefined;
@@ -26,11 +31,11 @@ export default class MongoPersistence implements Persistence{
     }
 
     async setUserData(userData: UserData): Promise<void>{
-        await this.accounts?.insertOne(userData);
+        await this.accountCollection?.insertOne(userData);
     }
 
     async updateUserData(partialUserData: Partial<UserData>): Promise<void>{
-        await this.accounts?.updateOne({
+        await this.accountCollection?.updateOne({
             username: partialUserData.username
         },{
             $set: partialUserData
@@ -55,19 +60,29 @@ export default class MongoPersistence implements Persistence{
         ];
     }
 
-    addRecord(record: PatientRecord): Promise<void>{
+    addRecord(record: TherapyRecord): Promise<void>{
+        throw this.recordCollection?.insertOne(record);
+    }
+
+    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]>{
+        return await this.recordCollection?.find({
+            username: username
+        }).toArray() as TherapyRecord[];
+    }
+
+    editRecord(record: TherapyRecord): Promise<void> {
+        throw new Error("Not implemented");
+    }
+    
+    createTherapySession(session: TherapySession): Promise<void>{
         throw new Error("Not implemented");
     }
 
-    getRecords(username: UserIdentifier): Promise<PatientRecord[]>{
+    closeTherapySession(session: TherapySession): Promise<void>{
         throw new Error("Not implemented");
     }
 
-    editRecord(record: PatientRecord): Promise<void> {
-        throw new Error("Not implemented");
-    }
-
-    listSession(record: UserIdentifier): Promise<TherapySession[]> {
+    getTherapySession(record: UserIdentifier): Promise<TherapySession[]> {
         throw new Error("Not implemented");
     }
 }

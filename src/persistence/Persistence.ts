@@ -20,16 +20,24 @@ export type UserProfile = {
     type: "patient" | "therapist"
 }
 
-export type PatientRecord = {
-    username: UserIdentifier,
-    date: string,
-    note: string
+export type TherapyMessage = {
+    author: UserIdentifier,
+    timestamp: number,
+    message: string
 }
 
 export type TherapySession = {
+    id: string,
     therapist: UserIdentifier,
     patient: UserIdentifier,
-    active: boolean
+    active: boolean,
+    messages: TherapyMessage[]
+}
+
+export type TherapyRecord = {
+    username: UserIdentifier,
+    date: string,
+    note: string
 }
 
 export type UserData = AuthData & UserProfile;
@@ -48,19 +56,17 @@ export default interface Persistence {
 
     // Records
     
-    addRecord(record: PatientRecord): Promise<void>;
+    addRecord(record: TherapyRecord): Promise<void>;
 
-    getRecords(username: UserIdentifier): Promise<PatientRecord[]>;
+    getRecords(username: UserIdentifier): Promise<TherapyRecord[]>;
 
-    editRecord(record: PatientRecord): Promise<void>;
+    editRecord(record: TherapyRecord): Promise<void>;
 
      // Sessions
 
-    listSession(therapist: UserIdentifier): Promise<TherapySession[]>;
+    createTherapySession(session: TherapySession): Promise<void>;
 
+    closeTherapySession(session: TherapySession): Promise<void>;
 
-
-   
-
-
+    getTherapySession(therapist: UserIdentifier): Promise<TherapySession[]>;
 }

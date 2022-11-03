@@ -2,7 +2,7 @@ import { Application } from "express";
 import { Server } from "../Server";
 import { Route } from "./Route";
 import { Session } from "../SessionManager";
-import { PatientRecord } from "../persistence/Persistence";
+import { TherapyRecord } from "../persistence/Persistence";
 
 export class RouteRecordAdd extends Route {
     setup(express: Application, server: Server): void {
@@ -16,7 +16,7 @@ export class RouteRecordAdd extends Route {
                 return;
             }
 
-            let data: PatientRecord = {
+            let data: TherapyRecord = {
                 username: req.body.username,
                 date: req.body.date,
                 note: req.body.note,
@@ -32,7 +32,7 @@ export class RouteRecordAdd extends Route {
         });
     }
 }
-
+//TODO check if edit record not "" and ถ้าไม่กรอกมาใช้อันเก่า
 export class RouteRecordEdit extends Route {
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("record/edit"), async (req, res) => {
@@ -45,7 +45,7 @@ export class RouteRecordEdit extends Route {
                 return;
             }
 
-            let data: PatientRecord = {
+            let data: TherapyRecord = {
                 username: req.body.username,
                 date: req.body.date,
                 note: req.body.note,

@@ -1,6 +1,6 @@
 import {NextFunction, Request, RequestHandler, Response, RouteParameters} from "express-serve-static-core";
 import * as argon2 from "argon2";
-import Persistence, {UserData} from "./persistence/Persistence";
+import Persistence, {UserData, TherapySession} from "./persistence/Persistence";
 
 export class SessionManager {
     sessionMap: Map<String, Session> = new Map();
@@ -82,6 +82,7 @@ export class Session {
     private creationTime: number = Date.now();
     private username?: string;
     private userData?: UserData;
+    private therapySession?: TherapySession;
 
     constructor(sessionId: string) {
         this.sessionId = sessionId;
@@ -107,20 +108,20 @@ export class Session {
         return this.userData;
     }
 
-    public getTherapist() {
-        return this.userData;
-    }
-
-    public listSession() {
-        return this.userData;
-    }
-
     public setUserData(userData?: UserData) {
         if (userData === undefined) {
             this.userData = undefined;
         } else {
             this.userData = {...userData, passwordHash: undefined};
         }
+    }
+
+    public getTherapySession() {
+        return this.therapySession;
+    }
+
+    public setTherapySession(therapySession: TherapySession){
+        this.therapySession = therapySession;        
     }
 
     public isExpired() {
