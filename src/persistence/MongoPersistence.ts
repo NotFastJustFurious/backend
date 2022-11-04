@@ -60,8 +60,8 @@ export default class MongoPersistence implements Persistence {
         ];
     }
 
-    addRecord(record: TherapyRecord): Promise<void> {
-        throw this.recordCollection?.insertOne(record);
+    async addRecord(record: TherapyRecord): Promise<void> {
+        await this.recordCollection?.insertOne(record);
     }
 
     async getRecords(username: UserIdentifier): Promise<TherapyRecord[]> {

@@ -4,6 +4,16 @@ import { Route } from "./Route";
 import { Session } from "../SessionManager";
 import { TherapyRecord } from "../persistence/Persistence";
 
+
+function generateId() {
+    let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let sessionId = '';
+    for (let i = 0; i < 16; i++) {
+        sessionId += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return sessionId;
+}
+//TODO validate patient, date, note
 export class RouteRecordAdd extends Route {
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("record/add"), async (req, res) => {
@@ -17,8 +27,8 @@ export class RouteRecordAdd extends Route {
             }
 
             let data: TherapyRecord = {
-                id: req.body.id,
-                patient: req.body.username,
+                id: generateId(),
+                patient: req.body.patient,
                 date: req.body.date,
                 note: req.body.note
             }
