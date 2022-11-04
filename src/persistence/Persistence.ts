@@ -35,6 +35,7 @@ export type TherapySession = {
 }
 
 export type TherapyRecord = {
+    id: string,
     patient: UserIdentifier,
     date: string,
     note: string
@@ -60,7 +61,7 @@ export default interface Persistence {
 
     getRecords(username: UserIdentifier): Promise<TherapyRecord[]>;
 
-    editRecord(record: TherapyRecord): Promise<void>;
+    editRecord(record: Partial<TherapyRecord>): Promise<void>;
 
      // Sessions
 

@@ -100,7 +100,7 @@ export class RouteTherapistSessionList extends Route {
             }
 
             let therapist = session.getUserData()?.username;
-            let therapistsession = await server.persistence?.getTherapySession(therapist ? therapist : "");
+            let therapistsession = await server.persistence?.getTherapySessionByTherapist(therapist ? therapist : "");
             res.send(this.serialize({
                 success: true,
                 data: therapistsession

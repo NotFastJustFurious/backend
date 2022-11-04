@@ -50,6 +50,7 @@ export default class PlainTextPersistence implements Persistence {
     async getRecords(username: UserIdentifier): Promise<TherapyRecord[]> {
         return [
             {
+                id: "12345",
                 patient: "hello",
                 date: "03/06/2009",
                 note: "help! she's crazy!!! This is an emerge   "

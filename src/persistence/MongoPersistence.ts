@@ -1,4 +1,4 @@
-import { MongoClient, Db, Collection } from 'mongodb';
+import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
 
 import Persistence, { UserData, UserProfile, TherapyRecord, UserIdentifier, TherapySession } from './Persistence';
 
@@ -70,8 +70,18 @@ export default class MongoPersistence implements Persistence {
         }).toArray() as TherapyRecord[];
     }
 
-    editRecord(record: TherapyRecord): Promise<void> {
-        throw new Error("Not implemented");
+    async editRecord(record: TherapyRecord): Promise<void> {
+        var newData: Partial<TherapyRecord> = { ...record };
+        delete newData.id;
+        if(!newData.patient) delete newData.patient;
+        if(!newData.date) delete newData.date;
+        if(!newData.note) delete newData.note;
+
+        await this.recordCollection?.updateOne({
+            id: record.id
+        }, {
+            $set: newData
+        });
     }
 
     createTherapySession(session: TherapySession): Promise<void> {
