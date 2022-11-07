@@ -11,8 +11,8 @@ import { SessionManager } from "./SessionManager";
 
 import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
-import { RouteAuthentication, RouteLogout } from './route/RouteAuthentication';
-import { RouteProfile, RouteRegister, RouteProfileEdit } from './route/RouteProfile';
+import { RouteLogin, RouteLogout, RouteRegister } from './route/RouteAuthentication';
+import { RouteProfile, RouteProfileEdit } from './route/RouteProfile';
 import { RouteTherapist } from './route/RouteTherapist';
 import { RouteRecordAdd, RouteRecordEdit } from './route/RouteRecord';
 
@@ -35,11 +35,14 @@ export class Server {
         if(this.express === undefined) throw new Error("What?!");
 
         this.routes.push(new RouteTest());
-        this.routes.push(new RouteAuthentication());
+
+        this.routes.push(new RouteLogin());
         this.routes.push(new RouteLogout());
-        this.routes.push(new RouteProfile());
         this.routes.push(new RouteRegister());
+
+        this.routes.push(new RouteProfile());
         this.routes.push(new RouteProfileEdit());
+
         this.routes.push(new RouteTherapist());
 
         this.routes.push(new RouteRecordAdd());
@@ -69,17 +72,6 @@ export class Server {
         await this.persistence.connect();
 
         this.sessionManager = new SessionManager(this.persistence);
-
-        // await this.sessionManager.createUser({
-        //     username: "hello",
-        //     passwordHash: "hi",
-        //     firstName: 'Opal',
-        //     lastName: 'a',
-        //     gender: 'a',
-        //     dob: 'a',
-        //     condition: [],
-        //     type: 'patient'
-        // })
 
         this.express = Express()
         this.express.use(CorsMiddleware);

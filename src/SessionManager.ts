@@ -72,20 +72,27 @@ export class SessionManager {
         return await this.persistence.setUserData(userData);
     }
 
-    async updateUser(userData: UserData): Promise<void> {
+    async updateUser(userData: Partial<UserData>): Promise<void> {
+        // linear search, STONK
+        this.sessionMap.forEach(session => {
+            if (session.getUserName() === userData.username) {
+                session.updateUserData(userData);
+            }
+        });
         return await this.persistence.updateUserData(userData);
     }
 }
 
 export class Session {
-    private sessionId: string;
-    private creationTime: number = Date.now();
+    private readonly sessionId: string;
+    private readonly creationTime: number;
     private username?: string;
     private userData?: UserData;
     private therapySession?: TherapySession;
 
-    constructor(sessionId: string) {
+    constructor(sessionId: string, creationTime?: number) {
         this.sessionId = sessionId;
+        this.creationTime = creationTime || Date.now();
     }
 
     public getSessionId() {
@@ -109,19 +116,15 @@ export class Session {
     }
 
     public setUserData(userData?: UserData) {
-        if (userData === undefined) {
-            this.userData = undefined;
-        } else {
-            this.userData = {...userData, passwordHash: undefined};
-        }
+        this.userData = userData;
     }
 
     public getTherapySession() {
         return this.therapySession;
     }
 
-    public setTherapySession(therapySession: TherapySession){
-        this.therapySession = therapySession;        
+    public setTherapySession(therapySession: TherapySession) {
+        this.therapySession = therapySession;
     }
 
     public isExpired() {
@@ -131,5 +134,10 @@ export class Session {
 
     public isAuthenticated() {
         return this.username !== undefined && !this.isExpired();
+    }
+
+    public updateUserData(userData: Partial<UserData>) {
+        if (this.userData === undefined) return;
+        this.userData = {...this.userData, ...userData};
     }
 }
