@@ -86,6 +86,8 @@ export class RouteRegister extends Route {
             }
 
             await server.sessionManager?.createUser(data);
+            await server.sessionManager?.deauthenticate(session);
+            await server.sessionManager?.authenticate(session, data.username, req.body.password);
             res.send(this.serialize({
                 success: true
             }));
