@@ -125,4 +125,8 @@ export default class PlainTextPersistence implements Persistence {
             ]
         };
     }
+        
+    getTherapySessionById(id: string): Promise<TherapySession | undefined>{
+        throw new Error("Not implemented");
+    }
 }

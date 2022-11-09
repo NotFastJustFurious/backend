@@ -29,7 +29,6 @@ export class RouteTherapist extends Route {
 }
 // TODO: validate patient data
 
-
 // createTherapySession(session: TherapySession): Promise<void>;
 export class RouteTherapistCreate extends Route {
 
@@ -44,15 +43,15 @@ export class RouteTherapistCreate extends Route {
                 return;
             }
 
-            let data: TherapySession = {
-                id: req.body.id,
-                therapist: session.getUserData()?.username as string,
-                patient: req.body.patient,
-                active: true,
-                messages: req.body.messages,
-            }
+            // let data: TherapySession = {
+            //     id: generateSessionId(),
+            //     therapist: session.getUserData()?.username as string,
+            //     patient: req.body.patient,
+            //     active: true,
+            //     messages: [],
+            // }
 
-            await server.persistence?.createTherapySession(data);
+            // await server.persistence?.createTherapySession(data);
             res.send(this.serialize({
                 success: true
             }));

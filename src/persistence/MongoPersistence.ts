@@ -103,4 +103,8 @@ export default class MongoPersistence implements Persistence {
             patient: patient
         }) as TherapySession;
     }
+
+    getTherapySessionById(id: string): Promise<TherapySession | undefined>{
+        throw new Error("Not implemented");
+    }
 }

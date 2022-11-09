@@ -71,5 +71,7 @@ export default interface Persistence {
 
     getTherapySessionByTherapist(therapist: UserIdentifier): Promise<TherapySession[]>;
 
-    getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession>;
+    getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession | undefined>;
+    
+    getTherapySessionById(id: string): Promise<TherapySession | undefined>;
 }
