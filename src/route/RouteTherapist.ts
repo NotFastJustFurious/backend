@@ -43,6 +43,14 @@ export class RouteTherapistCreate extends Route {
                 return;
             }
 
+            let therapist = await server.therapyManager?.allocateTherapist();
+            if(therapist === undefined){
+                throw new Error("Illegal state!");
+            }
+
+            let therapySession = server.therapyManager?.createSession(session.getUserName() as string, therapist.username);
+            
+
             // let data: TherapySession = {
             //     id: generateSessionId(),
             //     therapist: session.getUserData()?.username as string,

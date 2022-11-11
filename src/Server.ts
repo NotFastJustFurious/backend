@@ -16,6 +16,7 @@ import { RouteProfile, RouteProfileEdit } from './route/RouteProfile';
 import { RouteTherapist } from './route/RouteTherapist';
 import { RouteRecordAdd, RouteRecordEdit } from './route/RouteRecord';
 
+import TherapyManager from './TherapyManager';
 
 
 export class Server {
@@ -25,6 +26,7 @@ export class Server {
     express?: Express.Application;
     persistence?: Persistence;
     sessionManager?: SessionManager;
+    therapyManager?: TherapyManager;
 
     relativePath(relative: string): string {
         if (relative.startsWith("/")) relative = relative.substring(1);
@@ -72,6 +74,7 @@ export class Server {
         await this.persistence.connect();
 
         this.sessionManager = new SessionManager(this.persistence);
+        this.therapyManager = new TherapyManager(this.persistence);
 
         this.express = Express()
         this.express.use(CorsMiddleware);

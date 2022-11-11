@@ -1,5 +1,6 @@
 import Persistence from "./persistence/Persistence";
 import { TherapySession } from "./persistence/Persistence";
+import { UserData } from "./persistence/Persistence";
 
 export function generateSessionId() {
     let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -10,7 +11,7 @@ export function generateSessionId() {
     return sessionId;
 }
 
-export default class TherapySessionManager {
+export default class TherapyManager {
     sessionMap: Map<string, TherapySession> = new Map();
     persistence: Persistence;
 
@@ -42,6 +43,10 @@ export default class TherapySessionManager {
 
         await this.persistence.createTherapySession(session);
         return session;
+    }
+
+    async allocateTherapist(): Promise<UserData | undefined>{
+        throw new Error("Not implemented");
     }
 
 }
