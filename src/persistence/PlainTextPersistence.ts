@@ -70,7 +70,7 @@ export default class PlainTextPersistence implements Persistence {
         throw new Error("Not implemented");
     }
 
-    closeTherapySession(session: TherapySession): Promise<void> {
+    closeTherapySession(patient: UserIdentifier): Promise<void> {
         throw new Error("Not implemented");
     }
 
@@ -130,5 +130,9 @@ export default class PlainTextPersistence implements Persistence {
         
     getTherapySessionById(id: string): Promise<TherapySession | undefined>{
         throw new Error("Not implemented");
+    }
+
+    async updateTherapySession(session: Partial<TherapySession>): Promise<void>{
+
     }
 }

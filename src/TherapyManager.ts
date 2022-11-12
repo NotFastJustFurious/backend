@@ -18,7 +18,7 @@ export default class TherapyManager {
         this.persistence = persistence;
     }
 
-    async getSession(patient: UserIdentifier): Promise<TherapySession | undefined>{
+    async getPatientSession(patient: UserIdentifier): Promise<TherapySession | undefined>{
         let session = this.sessionMap.get(patient);
     
         if(session === undefined){
@@ -32,6 +32,7 @@ export default class TherapyManager {
     }
 
     async createSession(patient: UserIdentifier, therapist: UserIdentifier){
+        
         let session: TherapySession = {
             id: generateSessionId(),
             patient,
@@ -40,8 +41,23 @@ export default class TherapyManager {
             messages: []
         }
 
+        await this.persistence.closeTherapySession(patient);
         await this.persistence.createTherapySession(session);
+        this.sessionMap.set(patient, session);
         return session;
+    }
+
+    async sendMessagePatient(patient: UserIdentifier, message: string){
+        let session = await this.getPatientSession(patient);;
+        session?.messages.push({
+            message,
+            author: patient,
+            timestamp: Date.now()
+        })
+        this.persistence.updateTherapySession({
+            id: session?.id,
+            messages: session?.messages
+        })
     }
 
     async allocateTherapist(): Promise<UserData | undefined>{

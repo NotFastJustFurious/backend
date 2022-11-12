@@ -13,7 +13,7 @@ import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
 import { RouteLogin, RouteLogout, RouteRegister } from './route/RouteAuthentication';
 import { RouteProfile, RouteProfileEdit } from './route/RouteProfile';
-import { RouteTherapist, RouteTherapyGet, RouteTherapyCreate } from './route/RouteTherapy';
+import { RouteTherapist, RouteTherapyGet, RouteTherapySendMessagePatient, RouteTherapyCreate } from './route/RouteTherapy';
 import { RouteRecordAdd, RouteRecordEdit } from './route/RouteRecord';
 
 import TherapyManager from './TherapyManager';
@@ -48,6 +48,7 @@ export class Server {
         this.routes.push(new RouteTherapist());
         this.routes.push(new RouteTherapyGet());
         this.routes.push(new RouteTherapyCreate());
+        this.routes.push(new RouteTherapySendMessagePatient());
 
         this.routes.push(new RouteRecordAdd());
         this.routes.push(new RouteRecordEdit());

@@ -88,7 +88,6 @@ export class Session {
     private readonly creationTime: number;
     private username?: string;
     private userData?: UserData;
-    private therapySession?: TherapySession;
 
     constructor(sessionId: string, creationTime?: number) {
         this.sessionId = sessionId;
@@ -117,14 +116,6 @@ export class Session {
 
     public setUserData(userData?: UserData) {
         this.userData = userData;
-    }
-
-    public getTherapySession() {
-        return this.therapySession;
-    }
-
-    public setTherapySession(therapySession: TherapySession) {
-        this.therapySession = therapySession;
     }
 
     public isExpired() {

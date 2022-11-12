@@ -13,7 +13,8 @@ export class RouteLogin extends Route {
 
             if (session.isAuthenticated()) {
                 res.send(this.serialize({
-                    success: true
+                    success: true,
+                    data: session.getUserName()
                 }));
 
                 return;
@@ -23,7 +24,8 @@ export class RouteLogin extends Route {
             server.sessionManager?.authenticate(session, username, password).then(success => {
                 res.status(success ? 200 : 401).send(this.serialize({
                     success: success,
-                    error: success ? undefined : "Invalid username or password"
+                    error: success ? undefined : "Invalid username or password",
+                    data: success ? username : undefined
                 }))
 
             }).catch(err => {

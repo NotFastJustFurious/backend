@@ -43,23 +43,9 @@ export default class MongoPersistence implements Persistence {
     }
 
     async searchTherapist(condition: string[]): Promise<UserData[]> {
-        let profile: UserData = {
-            username: "",
-            passwordHash: "",
-            firstName: "John",
-            lastName: "Doe",
-            gender: "Moo",
-            dob: "1999-01-01",
-            condition: [],
-            credentials: [{
-                name: "depression",
-                description: "they can solve the big sad!"
-            }],
+        return await this.accountCollection?.find({
             type: "therapist"
-        };
-        return [
-            profile
-        ];
+        }).toArray() as UserData[];
     }
 
     async addRecord(record: TherapyRecord): Promise<void> {
@@ -90,23 +76,43 @@ export default class MongoPersistence implements Persistence {
         await this.therapyCollection?.insertOne({...session});
     }
 
-    closeTherapySession(session: TherapySession): Promise<void> {
-        throw new Error("Not implemented");
+    async closeTherapySession(patient: UserIdentifier): Promise<void> {
+        await this.therapyCollection?.updateMany({
+            patient
+        }, {
+            $set: {
+                active: false
+            }
+        });
     }
 
     async getTherapySessionByTherapist(therapist: UserIdentifier): Promise<TherapySession[]> {
         return await this.therapyCollection?.find({
-            therapist: therapist
+            therapist: therapist,
+            active: true
         }).toArray() as TherapySession[];
     }
 
-    async getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession> {
-        return await this.therapyCollection?.findOne({
-            patient: patient
-        }) as TherapySession;
+    async getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession | undefined> {
+        let result = await this.therapyCollection?.findOne({
+            patient: patient,
+            active: true
+        });
+
+        if(result === null) result = undefined;
+
+        return result;
     }
 
     getTherapySessionById(id: string): Promise<TherapySession | undefined>{
         throw new Error("Not implemented");
+    }
+
+    async updateTherapySession(session: Partial<TherapySession>): Promise<void>{
+        await this.therapyCollection?.updateOne({
+            id: session.id
+        },{
+            $set: session
+        })
     }
 }

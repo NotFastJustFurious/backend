@@ -36,6 +36,14 @@ export class RouteTherapyCreate extends Route {
         express.post(server.relativePath("therapy/create"), async (req, res) => {
             let session: Session = res.locals.session;
 
+            if(!session.isAuthenticated()){
+                res.status(401).send(this.serialize({
+                    success: false,
+                    error: "Not authenticated"
+                }))
+                return;
+            }
+
             let therapist = await server.therapyManager?.allocateTherapist();
             if(therapist === undefined){
                 throw new Error("Illegal state!");
@@ -56,14 +64,14 @@ export class RouteTherapyGet extends Route {
         express.get(server.relativePath("therapy"), async (req, res) => {
             let session: Session = res.locals.session;
             if(!session.isAuthenticated()){
-                res.send(this.serialize({
+                res.status(401).send(this.serialize({
                     success: false,
                     error: "Not authenticated"
                 }));
                 return; 
             }
 
-            let therapySession = await server.therapyManager?.getSession(session.getUserName() as string);
+            let therapySession = await server.therapyManager?.getPatientSession(session.getUserName() as string);
 
             res.send(this.serialize({
                 success: true,
@@ -73,25 +81,40 @@ export class RouteTherapyGet extends Route {
     }
 }
 
+export class RouteTherapySendMessagePatient extends Route {
+    setup(express: Application, server: Server): void {
+        express.post(server.relativePath("therapy/message"), async (req, res) => {
+            let session: Session = res.locals.session;
+            if(!session.isAuthenticated()){
+                res.status(401).send(this.serialize({
+                    success: false,
+                    error: "Unauthorized"
+                }));    
+                return;
+            }
+
+            await server.therapyManager?.sendMessagePatient(session.getUserName() as string, req.body.message);
+            res.send(this.serialize({
+                success: true
+            }))
+        });
+    }
+}
+
 // closeTherapySession(session: TherapySession): Promise<void>;
-export class RouteTherapistClose extends Route {
+export class RouteTherapyClose extends Route {
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("therapy/close"), async (req, res) => {
             let session: Session = res.locals.session;
-            let data = session.getTherapySession();
-            if (session.getUserData()?.type !== "therapist") {
+            if (!session.isAuthenticated()) {
                 res.status(401).send(this.serialize({
                     success: false,
-                    error: "Access denied"
+                    error: "Not authenticated"
                 }));
                 return;
             }
 
-            if (data != undefined) {
-                data.active = false
-            }
-
-            await server.persistence?.closeTherapySession(data? data as TherapySession : {} as TherapySession);
+            await server.persistence?.closeTherapySession(session.getUserName() as string);
             res.send(this.serialize({
                 success: true
             }));

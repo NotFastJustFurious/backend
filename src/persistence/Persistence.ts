@@ -67,11 +67,13 @@ export default interface Persistence {
 
     createTherapySession(session: TherapySession): Promise<void>;
 
-    closeTherapySession(session: TherapySession): Promise<void>;
+    closeTherapySession(username: UserIdentifier): Promise<void>;
 
     getTherapySessionByTherapist(therapist: UserIdentifier): Promise<TherapySession[]>;
 
     getTherapySessionByPatient(patient: UserIdentifier): Promise<TherapySession | undefined>;
     
     getTherapySessionById(id: string): Promise<TherapySession | undefined>;
+
+    updateTherapySession(session: Partial<TherapySession>): Promise<void>;
 }
