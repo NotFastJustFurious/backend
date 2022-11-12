@@ -1,6 +1,5 @@
 import Persistence from "./persistence/Persistence";
-import { TherapySession } from "./persistence/Persistence";
-import { UserData } from "./persistence/Persistence";
+import { TherapySession, UserData, UserIdentifier } from "./persistence/Persistence";
 
 export function generateSessionId() {
     let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -12,27 +11,27 @@ export function generateSessionId() {
 }
 
 export default class TherapyManager {
-    sessionMap: Map<string, TherapySession> = new Map();
+    sessionMap: Map<UserIdentifier, TherapySession> = new Map();
     persistence: Persistence;
 
     constructor(persistence: Persistence){
         this.persistence = persistence;
     }
 
-    async getSession(id: string): Promise<TherapySession | undefined>{
-        let session = this.sessionMap.get(id);
+    async getSession(patient: UserIdentifier): Promise<TherapySession | undefined>{
+        let session = this.sessionMap.get(patient);
     
         if(session === undefined){
-            session = await this.persistence?.getTherapySessionById(id);
+            session = await this.persistence?.getTherapySessionByPatient(patient);
             if(session !== undefined){
-                this.sessionMap.set(id, session);
+                this.sessionMap.set(patient, session);
             }
         }
 
         return session;
     }
 
-    async createSession(patient: string, therapist: string){
+    async createSession(patient: UserIdentifier, therapist: UserIdentifier){
         let session: TherapySession = {
             id: generateSessionId(),
             patient,
