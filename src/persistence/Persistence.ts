@@ -53,7 +53,7 @@ export default interface Persistence {
 
     updateUserData(partialUserData: Partial<UserData>): Promise<void>;
 
-    searchTherapist(condition: string[]): Promise<UserProfile[]>
+    searchTherapist(condition: string[]): Promise<UserData[]>
 
     // Records
     

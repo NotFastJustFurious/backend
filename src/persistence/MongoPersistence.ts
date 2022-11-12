@@ -42,8 +42,10 @@ export default class MongoPersistence implements Persistence {
         });
     }
 
-    async searchTherapist(condition: string[]): Promise<UserProfile[]> {
-        let profile: UserProfile = {
+    async searchTherapist(condition: string[]): Promise<UserData[]> {
+        let profile: UserData = {
+            username: "",
+            passwordHash: "",
             firstName: "John",
             lastName: "Doe",
             gender: "Moo",
@@ -84,8 +86,8 @@ export default class MongoPersistence implements Persistence {
         });
     }
 
-    createTherapySession(session: TherapySession): Promise<void> {
-        throw new Error("Not implemented");
+    async createTherapySession(session: TherapySession): Promise<void> {
+        await this.therapyCollection?.insertOne({...session});
     }
 
     closeTherapySession(session: TherapySession): Promise<void> {

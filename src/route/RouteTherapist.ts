@@ -3,6 +3,7 @@ import { Server } from "../Server";
 import { Route } from "./Route";
 import { Session } from "../SessionManager";
 import { TherapySession } from "../persistence/Persistence";
+import Randomizer from "../util/Randomizer";
 
 export class RouteTherapist extends Route {
     setup(express: Application, server: Server): void {
@@ -28,40 +29,23 @@ export class RouteTherapist extends Route {
     }
 }
 // TODO: validate patient data
-
 // createTherapySession(session: TherapySession): Promise<void>;
-export class RouteTherapistCreate extends Route {
+export class RouteTherapyCreate extends Route {
 
     setup(express: Application, server: Server): void {
-        express.get(server.relativePath("therapy/create"), async (req, res) => {
+        express.post(server.relativePath("therapy/create"), async (req, res) => {
             let session: Session = res.locals.session;
-            if (session.getUserData()?.type !== "therapist") {
-                res.status(401).send(this.serialize({
-                    success: false,
-                    error: "Access denied"
-                }));
-                return;
-            }
 
             let therapist = await server.therapyManager?.allocateTherapist();
             if(therapist === undefined){
                 throw new Error("Illegal state!");
             }
 
-            let therapySession = server.therapyManager?.createSession(session.getUserName() as string, therapist.username);
-            
+            let therapySession = await server.therapyManager?.createSession(session.getUserName() as string, therapist.username);
 
-            // let data: TherapySession = {
-            //     id: generateSessionId(),
-            //     therapist: session.getUserData()?.username as string,
-            //     patient: req.body.patient,
-            //     active: true,
-            //     messages: [],
-            // }
-
-            // await server.persistence?.createTherapySession(data);
             res.send(this.serialize({
-                success: true
+                success: true,
+                data: therapySession
             }));
         });
     }

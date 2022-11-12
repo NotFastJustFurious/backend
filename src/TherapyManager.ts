@@ -46,7 +46,9 @@ export default class TherapyManager {
     }
 
     async allocateTherapist(): Promise<UserData | undefined>{
-        throw new Error("Not implemented");
+        let therapistList = await this.persistence.searchTherapist([]);
+        let therapist = therapistList.at(therapistList.length * Math.random());
+        return therapist;
     }
 
 }

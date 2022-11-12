@@ -13,8 +13,13 @@ function generateId() {
     }
     return sessionId;
 }
-//TODO validate patient, date, note
 export class RouteRecordAdd extends Route {
+
+    validate(data: string | undefined): boolean {
+        let success = data != undefined && data != "";
+        return success;
+    }
+
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("record/add"), async (req, res) => {
             let session: Session = res.locals.session;
@@ -32,18 +37,26 @@ export class RouteRecordAdd extends Route {
                 date: req.body.date,
                 note: req.body.note
             }
+
+            let inputValid = this.validate(data.patient);
+            inputValid &&= this.validate(data.date);
+            inputValid &&= this.validate(data.patient);
+
+            if (!inputValid) {
+                res.status(400).send(this.serialize({
+                    success: false,
+                    error: "Invalid input"
+                }));
+                return;
+            }
+
             await server.persistence?.addRecord(data);
             res.send(this.serialize({
                 success: true
             }));
-            // res.status(401).send(this.serialize({
-            //     success: false,
-            //     error: "Not add"
-            // }));
         });
     }
 }
-//TODO check if edit record not "" and ถ้าไม่กรอกมาใช้อันเก่า
 export class RouteRecordEdit extends Route {
 
     setup(express: Application, server: Server): void {

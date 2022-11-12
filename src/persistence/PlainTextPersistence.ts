@@ -25,8 +25,10 @@ export default class PlainTextPersistence implements Persistence {
     }
 
 
-    async searchTherapist(condition: string[]): Promise<UserProfile[]> {
-        let profile: UserProfile = {
+    async searchTherapist(condition: string[]): Promise<UserData[]> {
+        let data: UserData = {
+            username: "",
+            passwordHash: "",
             firstName: "John",
             lastName: "Doe",
             gender: "Moo",
@@ -39,7 +41,7 @@ export default class PlainTextPersistence implements Persistence {
             type: "therapist"
         };
         return [
-            profile
+            data
         ];
     }
 
