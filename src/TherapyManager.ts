@@ -1,5 +1,4 @@
-import Persistence from "./persistence/Persistence";
-import { TherapySession, UserData, UserIdentifier } from "./persistence/Persistence";
+import Persistence, {TherapySession, UserData, UserIdentifier} from "./persistence/MongoPersistence";
 
 export function generateSessionId() {
     let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -14,16 +13,16 @@ export default class TherapyManager {
     sessionMap: Map<UserIdentifier, TherapySession> = new Map();
     persistence: Persistence;
 
-    constructor(persistence: Persistence){
+    constructor(persistence: Persistence) {
         this.persistence = persistence;
     }
 
-    async getPatientSession(patient: UserIdentifier): Promise<TherapySession | undefined>{
+    async getPatientSession(patient: UserIdentifier): Promise<TherapySession | undefined> {
         let session = this.sessionMap.get(patient);
-    
-        if(session === undefined){
+
+        if (session === undefined) {
             session = await this.persistence?.getTherapySessionByPatient(patient);
-            if(session !== undefined){
+            if (session !== undefined) {
                 this.sessionMap.set(patient, session);
             }
         }
@@ -31,8 +30,8 @@ export default class TherapyManager {
         return session;
     }
 
-    async createSession(patient: UserIdentifier, therapist: UserIdentifier){
-        
+    async createSession(patient: UserIdentifier, therapist: UserIdentifier) {
+
         let session: TherapySession = {
             id: generateSessionId(),
             patient,
@@ -47,8 +46,9 @@ export default class TherapyManager {
         return session;
     }
 
-    async sendMessagePatient(patient: UserIdentifier, message: string){
-        let session = await this.getPatientSession(patient);;
+    async sendMessagePatient(patient: UserIdentifier, message: string) {
+        let session = await this.getPatientSession(patient);
+        ;
         session?.messages.push({
             message,
             author: patient,
@@ -60,7 +60,7 @@ export default class TherapyManager {
         })
     }
 
-    async allocateTherapist(): Promise<UserData | undefined>{
+    async allocateTherapist(): Promise<UserData | undefined> {
         let therapistList = await this.persistence.searchTherapist([]);
         let therapist = therapistList.at(therapistList.length * Math.random());
         return therapist;

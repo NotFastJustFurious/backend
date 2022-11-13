@@ -2,7 +2,7 @@ import { Application } from "express";
 import { Server } from "../Server";
 import { Route } from "./Route";
 import { Session } from "../SessionManager";
-import { TherapyRecord } from "../persistence/Persistence";
+import { TherapyRecord } from "../persistence/MongoPersistence";
 
 
 function generateId() {
@@ -34,12 +34,11 @@ export class RouteRecordAdd extends Route {
             let data: TherapyRecord = {
                 id: generateId(),
                 patient: req.body.patient,
-                date: req.body.date,
+                date: Date.now(),
                 note: req.body.note
             }
 
             let inputValid = this.validate(data.patient);
-            inputValid &&= this.validate(data.date);
             inputValid &&= this.validate(data.patient);
 
             if (!inputValid) {
@@ -57,6 +56,7 @@ export class RouteRecordAdd extends Route {
         });
     }
 }
+
 export class RouteRecordEdit extends Route {
 
     setup(express: Application, server: Server): void {

@@ -1,8 +1,51 @@
-import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
+import {MongoClient, Db, Collection, ObjectId} from 'mongodb';
 
-import Persistence, { UserData, UserProfile, TherapyRecord, UserIdentifier, TherapySession } from './Persistence';
+export type UserIdentifier = string;
 
-export default class MongoPersistence implements Persistence {
+export type AuthData = {
+    username: UserIdentifier,
+    passwordHash: string | undefined
+}
+
+export type TherapistCredential = {
+    name: string,
+    description?: string
+}
+
+export type UserProfile = {
+    firstName: string,
+    lastName: string,
+    gender: string,
+    dob: string,
+    condition: string[],
+    credentials: TherapistCredential[],
+    type: "patient" | "therapist"
+}
+
+export type TherapyMessage = {
+    author: UserIdentifier,
+    timestamp: number,
+    message: string
+}
+
+export type TherapySession = {
+    id: string,
+    therapist: UserIdentifier,
+    patient: UserIdentifier,
+    active: boolean,
+    messages: TherapyMessage[]
+}
+
+export type TherapyRecord = {
+    id: string,
+    patient: UserIdentifier,
+    date: number,
+    note: string
+}
+
+export type UserData = AuthData & UserProfile;
+
+export default class MongoPersistence {
     mongo: MongoClient;
     database?: Db;
 
@@ -59,11 +102,11 @@ export default class MongoPersistence implements Persistence {
     }
 
     async editRecord(record: TherapyRecord): Promise<void> {
-        var newData: Partial<TherapyRecord> = { ...record };
+        var newData: Partial<TherapyRecord> = {...record};
         delete newData.id;
-        if(!newData.patient) delete newData.patient;
-        if(!newData.date) delete newData.date;
-        if(!newData.note) delete newData.note;
+        if (!newData.patient) delete newData.patient;
+        if (!newData.date) delete newData.date;
+        if (!newData.note) delete newData.note;
 
         await this.recordCollection?.updateOne({
             id: record.id
@@ -99,19 +142,19 @@ export default class MongoPersistence implements Persistence {
             active: true
         });
 
-        if(result === null) result = undefined;
+        if (result === null) result = undefined;
 
         return result;
     }
 
-    getTherapySessionById(id: string): Promise<TherapySession | undefined>{
+    getTherapySessionById(id: string): Promise<TherapySession | undefined> {
         throw new Error("Not implemented");
     }
 
-    async updateTherapySession(session: Partial<TherapySession>): Promise<void>{
+    async updateTherapySession(session: Partial<TherapySession>): Promise<void> {
         await this.therapyCollection?.updateOne({
             id: session.id
-        },{
+        }, {
             $set: session
         })
     }

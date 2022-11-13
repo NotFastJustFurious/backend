@@ -1,6 +1,6 @@
 import {NextFunction, Request, RequestHandler, Response, RouteParameters} from "express-serve-static-core";
 import * as argon2 from "argon2";
-import Persistence, {UserData, TherapySession} from "./persistence/Persistence";
+import Persistence, {UserData, TherapySession} from "./persistence/MongoPersistence";
 
 export class SessionManager {
     sessionMap: Map<String, Session> = new Map();

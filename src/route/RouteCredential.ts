@@ -2,7 +2,7 @@ import { Application } from "express";
 import { Server } from "../Server";
 import { Route } from "./Route";
 import { Session } from "../SessionManager";
-import { UserData } from "../persistence/Persistence";
+import { UserData } from "../persistence/MongoPersistence";
 
 export class RouteCredentialEdit extends Route {
     setup(express: Application, server: Server): void {

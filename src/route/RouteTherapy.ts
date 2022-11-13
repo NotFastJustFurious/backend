@@ -2,7 +2,7 @@ import { Application } from "express";
 import { Server } from "../Server";
 import { Route } from "./Route";
 import { Session } from "../SessionManager";
-import { TherapySession } from "../persistence/Persistence";
+import { TherapySession } from "../persistence/MongoPersistence";
 import Randomizer from "../util/Randomizer";
 
 export class RouteTherapist extends Route {

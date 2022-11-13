@@ -1,20 +1,23 @@
 import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
 import Dotenv from 'dotenv';
-import Express, { Application } from 'express';
+import Express, {Application} from 'express';
 
 import CorsMiddleware from './CorsMiddleware';
-import Persistence from './persistence/Persistence';
-import PlainTextPersistence from './persistence/PlainTextPersistence';
 import MongoPersistence from './persistence/MongoPersistence';
-import { SessionManager } from "./SessionManager";
+import {SessionManager} from "./SessionManager";
 
-import { Route } from './route/Route';
+import {Route} from './route/Route';
 import RouteTest from './route/RouteTest';
-import { RouteLogin, RouteLogout, RouteRegister } from './route/RouteAuthentication';
-import { RouteProfile, RouteProfileEdit } from './route/RouteProfile';
-import { RouteTherapist, RouteTherapyGet, RouteTherapySendMessagePatient, RouteTherapyCreate } from './route/RouteTherapy';
-import { RouteRecordAdd, RouteRecordEdit } from './route/RouteRecord';
+import {RouteLogin, RouteLogout, RouteRegister} from './route/RouteAuthentication';
+import {RouteProfile, RouteProfileEdit} from './route/RouteProfile';
+import {
+    RouteTherapist,
+    RouteTherapyGet,
+    RouteTherapySendMessagePatient,
+    RouteTherapyCreate
+} from './route/RouteTherapy';
+import {RouteRecordAdd, RouteRecordEdit} from './route/RouteRecord';
 
 import TherapyManager from './TherapyManager';
 
@@ -24,7 +27,7 @@ export class Server {
     path: string = "";
     routes: Route[] = [];
     express?: Express.Application;
-    persistence?: Persistence;
+    persistence?: MongoPersistence;
     sessionManager?: SessionManager;
     therapyManager?: TherapyManager;
 
@@ -34,7 +37,7 @@ export class Server {
     }
 
     setupRoutes() {
-        if(this.express === undefined) throw new Error("What?!");
+        if (this.express === undefined) throw new Error("What?!");
 
         this.routes.push(new RouteTest());
 
@@ -66,14 +69,9 @@ export class Server {
         if (process.env.BASE != undefined)
             this.path = process.env.BASE;
 
-        if (process.env.MONGODB === undefined) {
-            console.log("Using fallback persistence");
-            this.persistence = new PlainTextPersistence();
-        }
-        else {
-            console.log("Using MongoDB persistence");
-            this.persistence = new MongoPersistence(process.env.MONGODB);
-        }
+        console.log("Using MongoDB persistence");
+        // @ts-ignore yes, this is a hack
+        this.persistence = new MongoPersistence(process.env.MONGODB);
         await this.persistence.connect();
 
         this.sessionManager = new SessionManager(this.persistence);
