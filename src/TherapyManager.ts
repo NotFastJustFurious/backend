@@ -1,4 +1,5 @@
 import Persistence, {TherapySession, UserData, UserIdentifier} from "./persistence/MongoPersistence";
+import {Socket} from "socket.io";
 
 export function generateSessionId() {
     let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -66,4 +67,7 @@ export default class TherapyManager {
         return therapist;
     }
 
+    setSocket(username: string, socket: Socket) {
+
+    }
 }

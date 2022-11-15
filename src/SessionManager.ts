@@ -1,9 +1,11 @@
 import {NextFunction, Request, RequestHandler, Response, RouteParameters} from "express-serve-static-core";
 import * as argon2 from "argon2";
 import Persistence, {UserData, TherapySession} from "./persistence/MongoPersistence";
+import {Socket} from "socket.io";
 
 export class SessionManager {
     sessionMap: Map<String, Session> = new Map();
+    socketMap: Map<String, Socket> = new Map();
     persistence: Persistence;
 
     constructor(persistence: Persistence) {
@@ -36,6 +38,12 @@ export class SessionManager {
             sessionId += charset.charAt(Math.floor(Math.random() * charset.length));
         }
         return sessionId;
+    }
+
+    getSession(sessionId: string): Session | undefined {
+        let session = this.sessionMap.get(sessionId);
+        if (session && session.isExpired()) return undefined;
+        return session;
     }
 
     async hashPassword(password: string): Promise<string> {
@@ -81,6 +89,14 @@ export class SessionManager {
         });
         return await this.persistence.updateUserData(userData);
     }
+
+    public setSocket(sessionId: string, socket: Socket){
+        let session = this.getSession(sessionId);
+        if(!session) return;
+
+        session.setSocket(socket);
+        this.socketMap.set(sessionId, socket);
+    }
 }
 
 export class Session {
@@ -88,6 +104,7 @@ export class Session {
     private readonly creationTime: number;
     private username?: string;
     private userData?: UserData;
+    private socket?: Socket;
 
     constructor(sessionId: string, creationTime?: number) {
         this.sessionId = sessionId;
@@ -130,5 +147,13 @@ export class Session {
     public updateUserData(userData: Partial<UserData>) {
         if (this.userData === undefined) return;
         this.userData = {...this.userData, ...userData};
+    }
+
+    public setSocket(socket: Socket) {
+        this.socket = socket;
+    }
+
+    public getSocket(): Socket | undefined {
+        return this.socket;
     }
 }

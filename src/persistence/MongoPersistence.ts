@@ -38,6 +38,7 @@ export type TherapySession = {
 
 export type TherapyRecord = {
     id: string,
+    therapist: UserIdentifier,
     patient: UserIdentifier,
     date: number,
     note: string

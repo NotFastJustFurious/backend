@@ -2,6 +2,7 @@ import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
 import Dotenv from 'dotenv';
 import Express, {Application} from 'express';
+import * as http from "http";
 
 import CorsMiddleware from './CorsMiddleware';
 import MongoPersistence from './persistence/MongoPersistence';
@@ -18,18 +19,22 @@ import {
     RouteTherapyCreate
 } from './route/RouteTherapy';
 import {RouteRecordAdd, RouteRecordEdit} from './route/RouteRecord';
+import {Server as SocketServer} from "socket.io";
 
 import TherapyManager from './TherapyManager';
 
 
 export class Server {
     port: number = 3000;
+    socketPort: number = 3001;
     path: string = "";
     routes: Route[] = [];
     express?: Express.Application;
     persistence?: MongoPersistence;
     sessionManager?: SessionManager;
     therapyManager?: TherapyManager;
+    socketHttpServer?: http.Server;
+    socketServer?: SocketServer;
 
     relativePath(relative: string): string {
         if (relative.startsWith("/")) relative = relative.substring(1);
@@ -61,32 +66,67 @@ export class Server {
         });
     }
 
+    setupSockets() {
+        this.socketServer?.on("connection", (socket) => {
+            console.log("Socket connected");
+
+            socket.on("auth", (sessionId) => {
+                let session = this.sessionManager?.getSession(sessionId);
+                if(!session) return;
+
+                this.sessionManager?.setSocket(sessionId, socket);
+                this.therapyManager?.setSocket(session.getUserName(), socket);
+            });
+
+            socket.on("disconnect", () => {
+                console.log("Socket disconnected");
+            });
+        });
+    }
+
     public async start() {
 
         Dotenv.config();
-        if (process.env.PORT != undefined)
+
+        if(!process.env.MONGO_URL) throw new Error("No mongo url specified");
+
+        if (process.env.PORT != undefined) {
             this.port = Number.parseInt(process.env.PORT);
+            this.socketPort = this.port + 1;
+        }
+
         if (process.env.BASE != undefined)
             this.path = process.env.BASE;
 
-        console.log("Using MongoDB persistence");
-        // @ts-ignore yes, this is a hack
-        this.persistence = new MongoPersistence(process.env.MONGODB);
+        this.persistence = new MongoPersistence(process.env.MONGODB as string);
         await this.persistence.connect();
 
         this.sessionManager = new SessionManager(this.persistence);
         this.therapyManager = new TherapyManager(this.persistence);
+
 
         this.express = Express()
         this.express.use(CorsMiddleware);
         this.express.use(BodyParser.json());
         this.express.use(CookieParser());
         this.express.use(this.sessionManager.middleware);
-
         this.setupRoutes();
 
+        this.socketServer = new SocketServer();
+        this.setupSockets();
+        this.socketServer.listen(this.socketPort, {
+                cors: {
+                    allowedHeaders: "*"
+                }
+            }
+        );
+
+
+        console.log(`Socket server listening on port ${this.socketPort}`);
+
+
         this.express.listen(this.port, () => {
-            console.log(`Server started on port ${this.port}`);
+            console.log(`Backend server listening on port ${this.port}`);
         });
     }
 }

@@ -21,7 +21,7 @@ export class RouteRecordAdd extends Route {
     }
 
     setup(express: Application, server: Server): void {
-        express.get(server.relativePath("record/add"), async (req, res) => {
+        express.post(server.relativePath("record/add"), async (req, res) => {
             let session: Session = res.locals.session;
             if(session.getUserData()?.type !== "therapist"){
                 res.status(401).send(this.serialize({
@@ -33,6 +33,7 @@ export class RouteRecordAdd extends Route {
 
             let data: TherapyRecord = {
                 id: generateId(),
+                therapist: req.body.therapist,
                 patient: req.body.patient,
                 date: Date.now(),
                 note: req.body.note
@@ -72,6 +73,7 @@ export class RouteRecordEdit extends Route {
 
             await server.persistence?.editRecord({
                 id: req.body.id,
+                therapist: req.body.therapist,
                 patient: req.body.patient,
                 date: req.body.date,
                 note: req.body.note
