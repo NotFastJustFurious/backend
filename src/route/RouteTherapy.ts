@@ -106,7 +106,7 @@ export class RouteTherapistSessionList extends Route {
     setup(express: Application, server: Server): void {
         express.get(server.relativePath("therapy/list"), async (req, res) => {
             let session: Session = res.locals.session;
-
+            
             if (!session.isAuthenticated()) {
                 res.status(401).send(this.serialize({
                     success: false,

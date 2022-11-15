@@ -13,6 +13,7 @@ function generateId() {
     }
     return sessionId;
 }
+
 export class RouteRecordAdd extends Route {
 
     validate(data: string | undefined): boolean {
@@ -23,7 +24,7 @@ export class RouteRecordAdd extends Route {
     setup(express: Application, server: Server): void {
         express.post(server.relativePath("record/add"), async (req, res) => {
             let session: Session = res.locals.session;
-            if(session.getUserData()?.type !== "therapist"){
+            if (session.getUserData()?.type !== "therapist") {
                 res.status(401).send(this.serialize({
                     success: false,
                     error: "Access denied"
@@ -60,12 +61,34 @@ export class RouteRecordAdd extends Route {
     }
 }
 
+export class RouteRecordGet extends Route {
+    setup(express: Application, server: Server): void {
+        express.get(server.relativePath("record"), async (req, res) => {
+            let session: Session = res.locals.session;
+            if (session.getUserData()?.type !== "therapist") {
+                res.status(401).send(this.serialize({
+                    success: false,
+                    error: "Access denied"
+                }));
+                return;
+            }
+
+            let data = await server.persistence?.getRecords(session.getUserName() as string);
+            res.send(this.serialize({
+                success: true,
+                data: data
+            }));
+
+        });
+    }
+}
+
 export class RouteRecordEdit extends Route {
 
     setup(express: Application, server: Server): void {
         express.patch(server.relativePath("record/edit"), async (req, res) => {
             let session: Session = res.locals.session;
-            if(session.getUserData()?.type !== "therapist"){
+            if (session.getUserData()?.type !== "therapist") {
                 res.status(401).send(this.serialize({
                     success: false,
                     error: "Access denied"

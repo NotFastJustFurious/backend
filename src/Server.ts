@@ -17,7 +17,7 @@ import {
     RouteTherapyGet,
     RouteTherapyCreate
 } from './route/RouteTherapy';
-import {RouteRecordAdd, RouteRecordEdit} from './route/RouteRecord';
+import {RouteRecordAdd, RouteRecordEdit, RouteRecordGet} from './route/RouteRecord';
 import {Server as SocketServer} from "socket.io";
 
 import TherapyManager from './TherapyManager';
@@ -57,6 +57,7 @@ export class Server {
         this.routes.push(new RouteTherapyCreate());
 
         this.routes.push(new RouteRecordAdd());
+        this.routes.push(new RouteRecordGet());
         this.routes.push(new RouteRecordEdit());
 
         this.routes.forEach(route => {
