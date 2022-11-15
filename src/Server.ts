@@ -15,7 +15,6 @@ import {RouteProfile, RouteProfileEdit} from './route/RouteProfile';
 import {
     RouteTherapist,
     RouteTherapyGet,
-    RouteTherapySendMessagePatient,
     RouteTherapyCreate
 } from './route/RouteTherapy';
 import {RouteRecordAdd, RouteRecordEdit} from './route/RouteRecord';
@@ -26,7 +25,7 @@ import TherapyManager from './TherapyManager';
 
 export class Server {
     port: number = 3000;
-    socketPort: number = 3001;
+    socketPort: number = 3002;
     path: string = "";
     routes: Route[] = [];
     express?: Express.Application;
@@ -56,7 +55,6 @@ export class Server {
         this.routes.push(new RouteTherapist());
         this.routes.push(new RouteTherapyGet());
         this.routes.push(new RouteTherapyCreate());
-        this.routes.push(new RouteTherapySendMessagePatient());
 
         this.routes.push(new RouteRecordAdd());
         this.routes.push(new RouteRecordEdit());
@@ -70,12 +68,22 @@ export class Server {
         this.socketServer?.on("connection", (socket) => {
             console.log("Socket connected");
 
-            socket.on("auth", (sessionId) => {
+            socket.on("auth", (sessionId, callback) => {
+                if(typeof callback !== "function"){
+                    callback = (payload: any) => {
+                        socket.emit("auth", payload);
+                    }
+                }
+
                 let session = this.sessionManager?.getSession(sessionId);
-                if(!session) return;
+                if(!session || !session.isAuthenticated) {
+                    callback("FAILED");
+                    return;
+                }
 
                 this.sessionManager?.setSocket(sessionId, socket);
-                this.therapyManager?.setSocket(session.getUserName(), socket);
+                this.therapyManager?.setSocket(sessionId, session.getUserName() as string, socket);
+                callback("OK");
             });
 
             socket.on("disconnect", () => {
@@ -88,7 +96,7 @@ export class Server {
 
         Dotenv.config();
 
-        if(!process.env.MONGO_URL) throw new Error("No mongo url specified");
+        if(!process.env.MONGODB) throw new Error("No mongo url specified");
 
         if (process.env.PORT != undefined) {
             this.port = Number.parseInt(process.env.PORT);
@@ -102,7 +110,7 @@ export class Server {
         await this.persistence.connect();
 
         this.sessionManager = new SessionManager(this.persistence);
-        this.therapyManager = new TherapyManager(this.persistence);
+        this.therapyManager = new TherapyManager(this.persistence, this.sessionManager);
 
 
         this.express = Express()

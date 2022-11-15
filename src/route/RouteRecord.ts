@@ -35,6 +35,8 @@ export class RouteRecordAdd extends Route {
                 id: generateId(),
                 therapist: req.body.therapist,
                 patient: req.body.patient,
+                condition: req.body.condition,
+                rate: req.body.rate,
                 date: Date.now(),
                 note: req.body.note
             }
@@ -75,6 +77,8 @@ export class RouteRecordEdit extends Route {
                 id: req.body.id,
                 therapist: req.body.therapist,
                 patient: req.body.patient,
+                condition: req.body.condition,
+                rate: req.body.rate,
                 date: req.body.date,
                 note: req.body.note
             });

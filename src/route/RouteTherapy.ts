@@ -81,26 +81,6 @@ export class RouteTherapyGet extends Route {
     }
 }
 
-export class RouteTherapySendMessagePatient extends Route {
-    setup(express: Application, server: Server): void {
-        express.post(server.relativePath("therapy/message"), async (req, res) => {
-            let session: Session = res.locals.session;
-            if(!session.isAuthenticated()){
-                res.status(401).send(this.serialize({
-                    success: false,
-                    error: "Unauthorized"
-                }));    
-                return;
-            }
-
-            await server.therapyManager?.sendMessagePatient(session.getUserName() as string, req.body.message);
-            res.send(this.serialize({
-                success: true
-            }))
-        });
-    }
-}
-
 // closeTherapySession(session: TherapySession): Promise<void>;
 export class RouteTherapyClose extends Route {
     setup(express: Application, server: Server): void {

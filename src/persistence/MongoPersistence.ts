@@ -32,14 +32,15 @@ export type TherapySession = {
     id: string,
     therapist: UserIdentifier,
     patient: UserIdentifier,
-    active: boolean,
-    messages: TherapyMessage[]
+    active: boolean
 }
 
 export type TherapyRecord = {
     id: string,
     therapist: UserIdentifier,
     patient: UserIdentifier,
+    condition: string,
+    rate: number,
     date: number,
     note: string
 }
