@@ -45,6 +45,17 @@ export type TherapyRecord = {
     note: string
 }
 
+export type SurveyResponse = {
+    patient: UserIdentifier,
+    response: {
+        anx: number,
+        dep: number,
+        ptsd: number,
+        ocd: number,
+        ed: number
+    }
+}
+
 export type UserData = AuthData & UserProfile;
 
 export default class MongoPersistence {
@@ -54,6 +65,7 @@ export default class MongoPersistence {
     accountCollection?: Collection<UserData>;
     therapyCollection?: Collection<TherapySession>;
     recordCollection?: Collection<TherapyRecord>;
+    surveyCollection?: Collection<SurveyResponse>
 
     constructor(uri: string) {
         this.mongo = new MongoClient(uri);
@@ -160,4 +172,9 @@ export default class MongoPersistence {
             $set: session
         })
     }
+
+    async addSurveyRecord(record: SurveyResponse): Promise<void> {
+        await this.surveyCollection?.insertOne(record);
+    }
 }
+

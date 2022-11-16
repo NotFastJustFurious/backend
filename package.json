@@ -22,6 +22,8 @@
   "scripts": {
     "dev": "ts-node-dev ./src/Server.ts",
     "build": "tsc",
-    "start": "tsc && node ./build/Server.js"
+    "start": "tsc && node ./build/Server.js",
+    "profile": "tsc && node --prof ./build/Server.js",
+    "profile-analyze": "node --prof-process isolate-*"
   }
 }

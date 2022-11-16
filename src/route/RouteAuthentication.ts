@@ -87,6 +87,7 @@ export class RouteRegister extends Route {
                 return;
             }
 
+
             await server.sessionManager?.createUser(data);
             await server.sessionManager?.deauthenticate(session);
             await server.sessionManager?.authenticate(session, data.username, req.body.password);
