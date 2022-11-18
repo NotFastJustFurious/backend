@@ -109,9 +109,9 @@ export default class MongoPersistence {
         await this.recordCollection?.insertOne(record);
     }
 
-    async getRecords(username: UserIdentifier): Promise<TherapyRecord[]> {
+    async getRecords(therapist: UserIdentifier): Promise<TherapyRecord[]> {
         return await this.recordCollection?.find({
-            username: username
+            therapist
         }).toArray() as TherapyRecord[];
     }
 

@@ -13,7 +13,7 @@ export class RouteSurveyResponseAdd extends Route {
 
     setup(express: Application, server: Server): void {
         express.post(server.relativePath("survey/add"), async (req, res) => {
-            let session : Session = res.locals.session; 
+            let session: Session = res.locals.session;
             if (session.getUserData()?.type !== "patient") {
                 res.status(401).send(this.serialize({
                     success: false,
@@ -22,14 +22,14 @@ export class RouteSurveyResponseAdd extends Route {
                 return;
             }
 
-            let data: SurveyResponse  = {
+            let data: SurveyResponse = {
                 patient: req.body.patient,
                 response: {
-                anx: req.body.anx,
-                dep: req.body.dep,
-                ptsd: req.body.ptsd,
-                ocd: req.body.ocd,
-                ed: req.body.ed
+                    anx: req.body.anx,
+                    dep: req.body.dep,
+                    ptsd: req.body.ptsd,
+                    ocd: req.body.ocd,
+                    ed: req.body.ed
                 }
             }
 

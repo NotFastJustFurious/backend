@@ -15,7 +15,9 @@ import {RouteProfile, RouteProfileEdit} from './route/RouteProfile';
 import {
     RouteTherapist,
     RouteTherapyGet,
-    RouteTherapyCreate
+    RouteTherapyCreate,
+    RouteTherapyClose,
+    RouteTherapistSessionList
 } from './route/RouteTherapy';
 import {RouteRecordAdd, RouteRecordEdit, RouteRecordGet} from './route/RouteRecord';
 import {RouteSurveyResponseAdd} from './route/RouteSurvey';
@@ -56,6 +58,8 @@ export class Server {
         this.routes.push(new RouteTherapist());
         this.routes.push(new RouteTherapyGet());
         this.routes.push(new RouteTherapyCreate());
+        this.routes.push(new RouteTherapyClose());
+        this.routes.push(new RouteTherapistSessionList());
 
         this.routes.push(new RouteRecordAdd());
         this.routes.push(new RouteRecordGet());

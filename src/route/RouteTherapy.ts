@@ -84,7 +84,7 @@ export class RouteTherapyGet extends Route {
 // closeTherapySession(session: TherapySession): Promise<void>;
 export class RouteTherapyClose extends Route {
     setup(express: Application, server: Server): void {
-        express.get(server.relativePath("therapy/close"), async (req, res) => {
+        express.delete(server.relativePath("therapy/close"), async (req, res) => {
             let session: Session = res.locals.session;
             if (!session.isAuthenticated()) {
                 res.status(401).send(this.serialize({
@@ -115,8 +115,16 @@ export class RouteTherapistSessionList extends Route {
                 return;
             }
 
+            if(session.getUserData()?.type !== "therapist"){
+                res.status(403).send(this.serialize({
+                    success: false,
+                    error: "Not therapist"
+                }));
+                return;
+            }
+
             let therapist = session.getUserData()?.username;
-            let therapistsession = await server.persistence?.getTherapySessionByTherapist(therapist ? therapist : "");
+            let therapistsession = await server.persistence?.getTherapySessionByTherapist(therapist as string);
             res.send(this.serialize({
                 success: true,
                 data: therapistsession
