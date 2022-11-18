@@ -1,6 +1,6 @@
-import Persistence, {TherapySession, UserData, UserIdentifier} from "./persistence/MongoPersistence";
+import Persistence, { TherapySession, UserData, UserIdentifier } from "./persistence/MongoPersistence";
 import { SessionManager } from "./SessionManager";
-import {Socket} from "socket.io";
+import { Socket } from "socket.io";
 
 export function generateSessionId() {
     let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -56,39 +56,42 @@ export default class TherapyManager {
         return therapist;
     }
 
+    multicast(patient: string, key: string, value: string) {
+        let session = this.sessionMap.get(patient);
+        this.sessionMap.forEach((value, key) => {
+            if (session === value && key !== patient) {
+                let socket = this.playerSocketMap.get(key);
+                if (socket) {
+                    socket.emit(key, value);
+                }
+            }
+        });
+    }
+
     setSocket(sessionId: string, username: string, socket: Socket) {
         this.playerSocketMap.set(username, socket);
 
         socket.on("chat", (message) => {
             console.log("Chat: " + message);
-
-            let session = this.sessionMap.get(username);
-            this.sessionMap.forEach((value, key) => {
-                if(session === value && key !== username){
-                    let socket = this.playerSocketMap.get(key);
-                    if(socket){
-                        socket.emit("chat", message);
-                    }
-                }
-            });
+            this.multicast(username, "chat", message);
         });
 
         socket.on("select", (target, callback) => {
             console.log("select", target)
-            if(typeof callback !== "function"){
+            if (typeof callback !== "function") {
                 callback = (reply: string) => {
                     socket.emit("select", reply);
                 }
-            } 
+            }
 
             let session = this.sessionManager.getSession(sessionId);
-            if(!session || !session.isAuthenticated() || session.getUserData()?.type !== "therapist"){
+            if (!session || !session.isAuthenticated() || session.getUserData()?.type !== "therapist") {
                 callback("FAILED")
                 return;
             }
 
             let targetSession = this.sessionMap.get(target);
-            if(!targetSession){
+            if (!targetSession) {
                 callback("NO TARGET");
                 return;
             }
