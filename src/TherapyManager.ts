@@ -56,16 +56,31 @@ export default class TherapyManager {
         return therapist;
     }
 
-    multicast(patient: string, key: string, value: string) {
+    multicast(patient: string, channel: string, message: string) {
         let session = this.sessionMap.get(patient);
         this.sessionMap.forEach((value, key) => {
             if (session === value && key !== patient) {
                 let socket = this.playerSocketMap.get(key);
                 if (socket) {
-                    socket.emit(key, value);
+                    console.log(channel, message, " => ", key);
+                    socket.emit(channel, message);
                 }
             }
         });
+    }
+
+    closeSession(patient: string) {
+        let session =this.sessionMap.get(patient);
+        this.sessionMap.forEach((value, key) => {
+            if (session === value && key !== patient) {
+                this.sessionMap.delete(key);
+                let socket = this.playerSocketMap.get(key);
+                socket?.emit("close");
+                this.playerSocketMap.delete(key);
+            }
+        });
+
+        this.playerSocketMap.delete(patient);
     }
 
     setSocket(sessionId: string, username: string, socket: Socket) {

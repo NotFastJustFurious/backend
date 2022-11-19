@@ -109,6 +109,7 @@ export class RouteTherapyClose extends Route {
                 }
             }
 
+            server.therapyManager?.closeSession(target as string);
             await server.persistence?.closeTherapySession(session.getUserName() as string);
             res.send(this.serialize({
                 success: true
