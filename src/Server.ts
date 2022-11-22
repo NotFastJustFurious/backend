@@ -1,17 +1,17 @@
 import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
 import Dotenv from 'dotenv';
-import Express, {Application} from 'express';
+import Express, { Application } from 'express';
 import * as http from "http";
 
 import CorsMiddleware from './CorsMiddleware';
 import MongoPersistence from './persistence/MongoPersistence';
-import {SessionManager} from "./SessionManager";
+import { SessionManager } from "./SessionManager";
 
-import {Route} from './route/Route';
+import { Route } from './route/Route';
 import RouteTest from './route/RouteTest';
-import {RouteLogin, RouteLogout, RouteRegister} from './route/RouteAuthentication';
-import {RouteProfile, RouteProfileEdit} from './route/RouteProfile';
+import { RouteLogin, RouteLogout, RouteRegister } from './route/RouteAuthentication';
+import { RouteProfile, RouteProfileEdit } from './route/RouteProfile';
 import {
     RouteTherapist,
     RouteTherapyGet,
@@ -19,9 +19,9 @@ import {
     RouteTherapyClose,
     RouteTherapistSessionList
 } from './route/RouteTherapy';
-import {RouteRecordAdd, RouteRecordEdit, RouteRecordGet} from './route/RouteRecord';
-import {RouteSurveyResponseAdd} from './route/RouteSurvey';
-import {Server as SocketServer} from "socket.io";
+import { RouteRecordAdd, RouteRecordEdit, RouteRecordGet } from './route/RouteRecord';
+import { RouteSurveyResponseAdd } from './route/RouteSurvey';
+import { Server as SocketServer } from "socket.io";
 
 import TherapyManager from './TherapyManager';
 
@@ -77,14 +77,14 @@ export class Server {
             console.log("Socket connected");
 
             socket.on("auth", (sessionId, callback) => {
-                if(typeof callback !== "function"){
+                if (typeof callback !== "function") {
                     callback = (payload: any) => {
                         socket.emit("auth", payload);
                     }
                 }
 
                 let session = this.sessionManager?.getSession(sessionId);
-                if(!session || !session.isAuthenticated) {
+                if (!session || !session.isAuthenticated) {
                     callback("FAILED");
                     return;
                 }
@@ -104,7 +104,7 @@ export class Server {
 
         Dotenv.config();
 
-        if(!process.env.MONGODB) throw new Error("No mongo url specified");
+        if (!process.env.MONGODB) throw new Error("No mongo url specified");
 
         if (process.env.PORT != undefined) {
             this.port = Number.parseInt(process.env.PORT);
@@ -131,11 +131,10 @@ export class Server {
         this.socketServer = new SocketServer();
         this.setupSockets();
         this.socketServer.listen(this.socketPort, {
-                cors: {
-                    allowedHeaders: "*"
-                }
+            cors: {
+                allowedHeaders: "*"
             }
-        );
+        });
 
 
         console.log(`Socket server listening on port ${this.socketPort}`);

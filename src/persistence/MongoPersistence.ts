@@ -77,6 +77,7 @@ export default class MongoPersistence {
         this.accountCollection = this.database.collection<UserData>("account");
         this.therapyCollection = this.database.collection<TherapySession>("therapy");
         this.recordCollection = this.database.collection<TherapyRecord>("record");
+        this.surveyCollection = this.database.collection<SurveyResponse>("survey");
     }
 
     getUserData(identifier: UserIdentifier): Promise<UserData | undefined> {
