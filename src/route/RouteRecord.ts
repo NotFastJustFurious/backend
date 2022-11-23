@@ -41,18 +41,7 @@ export class RouteRecordAdd extends Route {
                 date: Date.now(),
                 note: req.body.note
             }
-
-            let inputValid = this.validate(data.patient);
-            inputValid &&= this.validate(data.patient);
-
-            if (!inputValid) {
-                res.status(400).send(this.serialize({
-                    success: false,
-                    error: "Invalid input"
-                }));
-                return;
-            }
-
+            
             await server.persistence?.addRecord(data);
             res.send(this.serialize({
                 success: true
