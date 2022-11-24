@@ -34,7 +34,7 @@ export class RouteRecordAdd extends Route {
 
             let data: TherapyRecord = {
                 id: generateId(),
-                therapist: req.body.therapist,
+                therapist: session.getUserName() as string,
                 patient: req.body.patient,
                 condition: req.body.condition,
                 rate: req.body.rate,
@@ -68,6 +68,28 @@ export class RouteRecordGet extends Route {
                 data: data
             }));
 
+        });
+    }
+}
+
+export class RouteRecordGetSelf extends Route {
+    setup(express: Application, server: Server): void {
+        express.get(server.relativePath("record/self"), async (req, res) => {
+            let session: Session = res.locals.session;
+            if (!session.isAuthenticated()) {
+                res.status(401).send(this.serialize({
+                    success: false,
+                    error: "Access denied"
+                }));
+                return;
+            }
+            
+            let data = await server.persistence?.getRecordsSelf(session.getUserName() as string);
+            res.send(this.serialize({
+                success: true,
+                data: data
+            }));
+            
         });
     }
 }

@@ -116,6 +116,12 @@ export default class MongoPersistence {
         }).toArray() as TherapyRecord[];
     }
 
+    async getRecordsSelf(patient: UserIdentifier): Promise<TherapyRecord[]> {
+        return await this.recordCollection?.find({
+            patient
+        }).toArray() as TherapyRecord[];
+    }
+
     async editRecord(record: TherapyRecord): Promise<void> {
         var newData: Partial<TherapyRecord> = {...record};
         delete newData.id;

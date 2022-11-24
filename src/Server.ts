@@ -19,7 +19,7 @@ import {
     RouteTherapyClose,
     RouteTherapistSessionList
 } from './route/RouteTherapy';
-import { RouteRecordAdd, RouteRecordEdit, RouteRecordGet } from './route/RouteRecord';
+import { RouteRecordAdd, RouteRecordEdit, RouteRecordGet, RouteRecordGetSelf} from './route/RouteRecord';
 import { RouteSurveyResponseAdd } from './route/RouteSurvey';
 import { Server as SocketServer } from "socket.io";
 
@@ -63,6 +63,7 @@ export class Server {
 
         this.routes.push(new RouteRecordAdd());
         this.routes.push(new RouteRecordGet());
+        this.routes.push(new RouteRecordGetSelf());
         this.routes.push(new RouteRecordEdit());
 
         this.routes.push(new RouteSurveyResponseAdd());
