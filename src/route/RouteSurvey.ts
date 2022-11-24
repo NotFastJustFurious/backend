@@ -6,8 +6,8 @@ import { SurveyResponse } from "../persistence/MongoPersistence";
 
 export class RouteSurveyResponseAdd extends Route {
 
-    validate(data: string | undefined | number): boolean {
-        let success = data != undefined && data != "";
+    validate(data: undefined | null | number): boolean {
+        let success = data !== undefined && data != null && typeof data === "number";
         return success;
     }
 
@@ -34,8 +34,7 @@ export class RouteSurveyResponseAdd extends Route {
                 }
             }
 
-            let inputValid = this.validate(data.patient);
-            inputValid &&= this.validate(data.response.anx);
+            let inputValid = this.validate(data.response.anx);
             inputValid &&= this.validate(data.response.dep);
             inputValid &&= this.validate(data.response.ptsd);
             inputValid &&= this.validate(data.response.ocd);
