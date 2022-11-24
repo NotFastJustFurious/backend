@@ -17,7 +17,7 @@ export type UserProfile = {
     lastName: string,
     gender: string,
     dob: string,
-    condition: string[],
+    condition: object,
     credentials: TherapistCredential[],
     type: "patient" | "therapist"
 }
@@ -100,7 +100,7 @@ export default class MongoPersistence {
         });
     }
 
-    async searchTherapist(condition: string[]): Promise<UserData[]> {
+    async searchTherapist(condition: object): Promise<UserData[]> {
         return await this.accountCollection?.find({
             type: "therapist"
         }).toArray() as UserData[];
@@ -181,7 +181,14 @@ export default class MongoPersistence {
     }
 
     async addSurveyRecord(record: SurveyResponse): Promise<void> {
-        await this.surveyCollection?.insertOne(record);
+        // await this.surveyCollection?.insertOne(record);
+        this.accountCollection?.updateOne({
+            username: record.patient
+        }, {
+            $set:{
+                condition: record.response
+            }
+        })
     }
 }
 

@@ -19,7 +19,7 @@ export class RouteTherapist extends Route {
             }
 
             let condition = session.getUserData()?.condition;
-            let therapist = await server.persistence?.searchTherapist(condition ? condition : []);
+            let therapist = await server.persistence?.searchTherapist(condition ? condition : {});
 
             res.send(this.serialize({
                 success: true,
