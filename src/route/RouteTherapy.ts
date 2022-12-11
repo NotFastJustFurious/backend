@@ -2,8 +2,7 @@ import { Application } from "express";
 import { Server } from "../Server";
 import { Route } from "./Route";
 import { Session } from "../SessionManager";
-import { TherapySession } from "../persistence/MongoPersistence";
-import Randomizer from "../util/Randomizer";
+
 
 export class RouteTherapist extends Route {
     setup(express: Application, server: Server): void {
@@ -28,8 +27,7 @@ export class RouteTherapist extends Route {
         });
     }
 }
-// TODO: validate patient data
-// createTherapySession(session: TherapySession): Promise<void>;
+
 export class RouteTherapyCreate extends Route {
 
     setup(express: Application, server: Server): void {
@@ -81,7 +79,6 @@ export class RouteTherapyGet extends Route {
     }
 }
 
-// closeTherapySession(session: TherapySession): Promise<void>;
 export class RouteTherapyClose extends Route {
     setup(express: Application, server: Server): void {
         express.post(server.relativePath("therapy/close"), async (req, res) => {

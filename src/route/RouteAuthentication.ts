@@ -70,7 +70,6 @@ export class RouteRegister extends Route {
                 credentials: [],
                 type: "patient"
             }
-            //TODO validate data
 
             let inputValid = this.validate(data.username);
             inputValid &&= this.validate(data.firstName);
